@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
-require 'weeknote'
+require 'weeknote_state'
 
-describe Weeknote do
-  subject { Weeknote.new }
+describe WeeknoteState do
+  subject { WeeknoteState.new }
 
   it "has initial state of idle" do
     subject.state.must_equal 'idle'

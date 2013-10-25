@@ -1,6 +1,6 @@
 require 'state_machine'
 
-class Weeknote 
+class WeeknoteState
   state_machine :state, :initial => :idle do
     event :start do
       transition :idle => :ready

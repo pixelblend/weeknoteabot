@@ -1,8 +1,8 @@
 $:.unshift(File.dirname(__FILE__) + '/../../lib')
-require 'weeknote'
+require 'weeknote_state'
 
 Before do
-  @weeknote = Weeknote.new
+  @weeknote = WeeknoteState.new
 end
 
 Given(/^a state of (.*)$/) do |state|
