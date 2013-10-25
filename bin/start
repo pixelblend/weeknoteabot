@@ -28,7 +28,6 @@ Thread.new do
   loop do
     # find unread emails, oldest first
     Mail.find(:what => :first, :order => :asc, :keys => ['NOT','SEEN']) do |email, imap, uid|
-      #p ['found',email.subject, Time.now]
       @emails << email
       # mark as read
       imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
