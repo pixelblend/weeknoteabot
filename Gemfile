@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'statemachine'
+gem 'state_machine'
 gem 'mail'
 gem 'rake'
 

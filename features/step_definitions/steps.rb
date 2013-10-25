@@ -6,7 +6,7 @@ Before do
 end
 
 Given(/^a state of (.*)$/) do |state|
-  @weeknote.state.to_s.must_equal state
+  @weeknote.state.must_equal state
 end
 
 When(/^an email is recieved$/) do

@@ -1,8 +1,9 @@
-require 'statemachine'
-module Weeknote
-  def self.new
-    Statemachine.build do
-      trans :idle, :begin, :ready
+require 'state_machine'
+
+class Weeknote 
+  state_machine :state, :initial => :idle do
+    event :ready do
+      transition :idle => :ready
     end
   end
 end
