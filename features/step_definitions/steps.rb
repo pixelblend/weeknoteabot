@@ -1,5 +1,12 @@
+$:.unshift(File.dirname(__FILE__) + '/../../lib')
+require 'weeknote'
+
+Before do
+  @weeknote = Weeknote.new
+end
+
 Given(/^a state of (.*)$/) do |state|
-  pending 
+  @weeknote.state.to_s.must_equal state
 end
 
 When(/^an email is recieved$/) do
@@ -18,7 +25,7 @@ Then(/^the state should be (.*)$/) do |state|
   pending 
 end
 
-Then(/^the email should be sent to the group$/) do
+Then(/^the email should be sent to the (group|contributor)$/) do |recipient|
   pending 
 end
 

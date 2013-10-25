@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'transitions'
+gem 'statemachine'
 gem 'mail'
 gem 'rake'
 

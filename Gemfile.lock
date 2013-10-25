@@ -36,7 +36,7 @@ GEM
       pry (~> 0.9.10)
     rake (10.1.0)
     slop (3.4.6)
-    transitions (0.1.11)
+    statemachine (2.2.0)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -49,4 +49,4 @@ DEPENDENCIES
   mail
   pry-debugger
   rake
-  transitions
+  statemachine
