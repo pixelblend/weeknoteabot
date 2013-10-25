@@ -6,6 +6,7 @@ require 'bundler/setup'
 require 'eventmachine'
 require 'mail'
 
+require './lib/message_parser'
 require './lib/weeknote_state'
 
 config = File.expand_path('../config.yml', File.dirname(__FILE__))
@@ -38,8 +39,6 @@ end
 
 EM.run do
   @emails.subscribe do |email|
-#    MessageParser.new(email, @state).parse
-    p ['read',email.subject, Time.now]
-    sleep(5)
+    MessageParser.new(email, @state).parse
   end
 end
