@@ -1,7 +1,11 @@
+require 'bundler/setup'
 require 'rake/testtask'
+require 'cucumber/rake/task'
 
 Rake::TestTask.new do |t|
-    t.pattern = "spec/*_spec.rb"
+  t.pattern = "spec/*_spec.rb"
 end
 
-task :default => :test
+Cucumber::Rake::Task.new do |t|
+  t.cucumber_opts = %w{--format pretty}
+end
