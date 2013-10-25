@@ -1,0 +1,7 @@
+Glossary of Terms
+=================
+
+* Period - the next approaching afternoon / morning. e.g., if the Gentle Nag email is sent on Thursday afternoon, the Argro Nag email is sent on Friday morning. Weeknotabot does not work weekends; the period after Friday afternoon is Monday morning.
+* Compiler - the sucker requesting the weeknotes that week.
+* Group - the rest of IRFS. This is determined by the contents of the Whereabouts API.
+

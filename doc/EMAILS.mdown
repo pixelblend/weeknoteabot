@@ -1,0 +1,13 @@
+Email Types
+-----------
+
+Here is a list of the available email types known to the Weeknoteabot.
+
+1. Weeknotes begin
+  Sent from the compiler with the subject BEGIN WEEKNOTES. This email is sent out to the group.
+2. Contributions
+  Any email sent during states 2-5. Emails are logged and saved with attachements.
+3. Weeknotes end
+  Sent from the compiler with the subject END WEEKNOTES. This email is sent out to the group. 
+4. Current State
+  Sent with the subject STATUS. Replies to the sender with current state, timings of nag emails, number of contributions so far.
