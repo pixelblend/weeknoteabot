@@ -5,6 +5,10 @@ gem 'mail'
 gem 'rake'
 gem 'eventmachine'
 
+group :deployment do
+  gem 'foreman'
+end
+
 group :development do
   gem 'pry-debugger'
 end

@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+$PROGRAM_NAME='weeknoteabot'
+$stdout.sync = true
+
 require 'bundler/setup'
 require 'eventmachine'
 require 'mail'
@@ -6,7 +9,12 @@ require 'mail'
 require './lib/weeknote_state'
 
 config = File.expand_path('../config.yml', File.dirname(__FILE__))
-email_config = YAML::load_file(config)
+
+begin
+  email_config = YAML::load_file(config)
+rescue Errno::ENOENT => e
+  abort "config.yml not found. Use rake config to generate one."
+end
 
 @state = WeeknoteState.new
 @emails = EM::Channel.new

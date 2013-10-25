@@ -8,6 +8,10 @@ This service hopes to make the process much saner.
 
 Use `bundle` to install all the required gems. You'll need a `config.yml` file with your email server's details. You can generate that with `rake config`.
 
+## Running the server
+
+`foreman start`
+
 ## The Proposal
 
 I propose an email-based service that automates this process. Every Thursday morning, an email is sent to the server by the author of this week's notes. When the email is received, the service emails out the initial request to all known contributors. Responses are logged, saved and relayed to the rest of the group. Chaser emails are sent to non-responders that afternoon and the next morning. The next afternoon, the emails are compiled and sent to the author in a simple format that makes writing the weeknotes a pleasure. We can add on a web interface later that lets us go through the archives and get contribution statistics, etc.
