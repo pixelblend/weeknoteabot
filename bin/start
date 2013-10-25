@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'eventmachine'
+require 'mail'
+
+require './lib/weeknote_state'
+
+config = File.expand_path('../config.yml', File.dirname(__FILE__))
+email_config = YAML::load_file(config)
+
+@state = WeeknoteState.new
+@emails = EM::Channel.new
+
+Mail.defaults do
+  retriever_method :imap, email_config
+end
+
+Thread.abort_on_exception = true
+Thread.new do
+  loop do
+    # find unread emails, oldest first
+    Mail.find(:what => :first, :order => :asc, :keys => ['NOT','SEEN']) do |email, imap, uid|
+      #p ['found',email.subject, Time.now]
+      @emails << email
+      # mark as read
+      imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
+    end
+    sleep(10)
+  end
+end
+
+EM.run do
+  @emails.subscribe do |email|
+#    MessageParser.new(email, @state).parse
+    p ['read',email.subject, Time.now]
+    sleep(5)
+  end
+end

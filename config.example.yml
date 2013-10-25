@@ -1,0 +1,5 @@
+:address:    'imap.gmail.com'
+:port:       993
+:user_name:  'xxx@gmail.com'
+:password:   'password'
+:enable_ssl: true
