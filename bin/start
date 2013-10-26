@@ -3,8 +3,8 @@ $PROGRAM_NAME='weeknoteabot'
 $stdout.sync = true
 
 require 'bundler/setup'
-require 'eventmachine'
 require 'mail'
+require 'thread'
 
 require './lib/message_parser'
 require './lib/weeknote_state'
@@ -17,15 +17,16 @@ rescue Errno::ENOENT => e
   abort "config.yml not found. Use rake config to generate one."
 end
 
-@state = WeeknoteState.new
-@emails = EM::Channel.new
+@state  = WeeknoteState.new
+@emails = Queue.new
+@threads = []
 
 Mail.defaults do
   retriever_method :imap, email_config
 end
 
 Thread.abort_on_exception = true
-Thread.new do
+@threads << Thread.new do
   loop do
     # find unread emails, oldest first
     Mail.find(:what => :first, :order => :asc, :keys => ['NOT','SEEN']) do |email, imap, uid|
@@ -37,8 +38,13 @@ Thread.new do
   end
 end
 
-EM.run do
-  @emails.subscribe do |email|
-    MessageParser.new(email, @state).parse
+@threads << Thread.new do
+  loop do
+    email = @emails.pop
+    msg = MessageParser.new(email, @state)
+    msg.parse
+    # msg.respond
   end
 end
+
+@threads.each(&:join)

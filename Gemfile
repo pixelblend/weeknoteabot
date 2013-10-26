@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'state_machine'
 gem 'mail'
 gem 'rake'
-gem 'eventmachine'
 
 group :deployment do
   gem 'foreman'
