@@ -44,14 +44,13 @@ end
     email = @incoming.pop
     msg = MessageParser.new(email, @state)
     msg.parse
-    @outgoing << msg.respond
+    @outgoing << msg.response if msg.reply?
   end
 end
 
 @threads << Thread.new do
   loop do
     email = @outgoing.pop
-    next
     
     Mail.deliver do
       from     email[:from]
