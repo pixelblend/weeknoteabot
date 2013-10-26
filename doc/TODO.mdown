@@ -1,0 +1,10 @@
+# TODO
+* Log the hell out of *everything*.
+* Thread-safe storage to keep track of current *Weeknotes #*, *current state* and
+  who has *contributed* so far. (PStore?)
+* **WeeknotesPeriod** enumerable to figure out when to send nag emails
+* Class to defer nag emails - Run thread, sleep for period X, trigger email
+* **WeeknotesCompiler** - Zips up attachments, collects all contributions and
+  emails weeknote compiler.
+* Move thread definitions into classes
+  * **MailRoom** class: handles incoming and outgoing queues.
