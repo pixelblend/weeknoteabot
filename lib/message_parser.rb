@@ -6,7 +6,10 @@ class MessageParser
   end
 
   def parse
-    p ['read', email.subject, state.state, Time.now]
-    sleep(5)
+    ['read', email.subject, state.state, Time.now]
+  end
+
+  def respond
+    ['respond', email.subject, Time.now]
   end
 end
