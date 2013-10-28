@@ -30,7 +30,7 @@ describe MessageParser do
       @parser.reply?.must_equal true
       response = @parser.response
 
-      response[:subject].must_equal 'huh?'
+      response[:subject].must_equal 'Sorry, why did you send this?'
       response[:to].must_equal 'confused@bbc.co.uk'
       response[:body].must_match 'I don\'t understand'
     end
@@ -44,6 +44,7 @@ describe MessageParser do
       @parser.parse
       @parser.reply?.must_equal true
 
+      @parser.response[:to].must_equal :all
       @parser.response[:subject].must_equal 'New Weeknotes'
       @parser.response[:body].must_equal 'Weeknotes please!'
     end

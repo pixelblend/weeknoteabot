@@ -21,7 +21,7 @@ When(/^the sender is a (contributor|stranger)$/) do |sender_type|
   when 'contributor'
     @email.from = 'known@bbc.co.uk'
   else
-    raise 'unknown'
+    pending
   end 
 end
 
@@ -32,13 +32,25 @@ end
 When(/^the email is parsed$/) do
   @parser = MessageParser.new(@email, @state)
   @parser.parse
+  @response = @parser.response
 end
 
 Then(/^the state should be (.*)$/) do |state|
   @state.state.must_equal state 
 end
 
-Then(/^the email should be sent to the (group|contributor)$/) do |recipient|
-  pending 
+Then(/^the response should be sent to the (group|sender|compiler)$/) do |recipient|
+  case recipient
+  when 'sender'
+    @response[:to].must_equal @email.from
+  when 'group'
+    @response[:to].must_equal :all
+  else
+    pending
+  end
+end
+
+Then(/^the subject should be (.*)$/) do |subject|
+  @response[:subject].must_equal subject
 end
 

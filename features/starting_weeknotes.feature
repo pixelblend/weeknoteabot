@@ -7,7 +7,7 @@ Feature: Starting Weeknotes
     And the subject is New Weeknotes
     And the email is parsed
     Then the state should be ready
-    And the email should be sent to the group
+    And the response should be sent to the group
  
   Scenario: State is idle, non-starter email recieved.
     Given a state of idle
@@ -15,5 +15,7 @@ Feature: Starting Weeknotes
     And the sender is a contributor
     And the subject is yadda yadda
     And the email is parsed
-    Then the state should be idle
+    Then the response should be sent to the sender
+    And the subject should be Sorry, why did you send this?
+    And the state should be idle
 
