@@ -14,4 +14,5 @@ end
 
 group :test do
   gem 'cucumber'
+  gem 'mocha', :require => false
 end

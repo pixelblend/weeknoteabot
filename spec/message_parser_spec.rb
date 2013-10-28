@@ -10,17 +10,56 @@ describe MessageParser do
     parser.state.must_equal 'state'
   end
 
-  describe "#ready" do
-    subject { MessageParser.new('email', 'state') }
+  describe "when status is ready" do
+    before do
+      @email = mock('mail')
 
-    it 'is not ready if there is no response set' do
-      subject.response.must_be_nil
-      subject.ready?.must_equal false
+      @state = mock('state')
+      @state.expects(:idle?).returns(true)
+
+      @parser = subject.new(@email, @state)
     end
 
-    it 'is ready when a response has been set' do
+    it 'replies to non-triggering email in a confused manner' do
+      @email.expects(:subject).returns('My work this week').at_least_once
+      @email.expects(:from).returns('confused@bbc.co.uk').at_least_once
+      @state.expects(:ready!).never
+
+      @parser.parse
+      
+      @parser.reply?.must_equal true
+      response = @parser.response
+
+      response[:subject].must_equal 'huh?'
+      response[:to].must_equal 'confused@bbc.co.uk'
+      response[:body].must_match 'I don\'t understand'
+    end
+
+    it 'sends out triggering email and sets ready state' do
+      @email.expects(:subject).returns('WEEKNOTES BEGIN').at_least_once
+      @email.expects(:body).returns('Weeknotes please!').at_least_once
+
+      @state.expects(:ready!)
+
+      @parser.parse
+      @parser.reply?.must_equal true
+
+      @parser.response[:subject].must_equal 'WEEKNOTES BEGIN'
+      @parser.response[:body].must_equal 'Weeknotes please!'
+    end
+  end
+
+  describe "#reply?" do
+    subject { MessageParser.new('email', 'state') }
+
+    it 'no reply if there is no response set' do
+      subject.response.must_be_nil
+      subject.reply?.must_equal false
+    end
+
+    it 'is a reply when a response has been set' do
       subject.stub :response, {:to => "dan@bbc"} do
-        subject.ready?.must_equal true
+        subject.reply?.must_equal true
       end
     end
   end
