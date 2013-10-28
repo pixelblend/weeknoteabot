@@ -9,29 +9,29 @@ require 'thread'
 require './lib/message_parser'
 require './lib/weeknote_state'
 
-config = File.expand_path('../config.yml', File.dirname(__FILE__))
+config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
 
 begin
-  email_config = YAML::load_file(config)
+  email_config = YAML::load_file(config_file)
 rescue Errno::ENOENT => e
   abort "config.yml not found. Use rake config to generate one."
 end
 
-@state  = WeeknoteState.new
-@incoming = Queue.new
-@outgoing = Queue.new
-@threads = []
-
 Mail.defaults do
   retriever_method :imap, email_config
 end
+
+@state         = WeeknoteState.new
+@incoming_mail = Queue.new
+@outgoing_mail = Queue.new
+@threads       = []
 
 Thread.abort_on_exception = true
 @threads << Thread.new do
   loop do
     # find unread emails, oldest first
     Mail.find(:what => :first, :order => :asc, :keys => ['NOT','SEEN']) do |email, imap, uid|
-      @incoming << email
+      @incoming_mail << email
       # mark as read
       imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
     end
@@ -41,16 +41,16 @@ end
 
 @threads << Thread.new do
   loop do
-    email = @incoming.pop
+    email = @incoming_mail.pop
     msg = MessageParser.new(email, @state)
     msg.parse
-    @outgoing << msg.response if msg.reply?
+    @outgoing_mail << msg.response if msg.reply?
   end
 end
 
 @threads << Thread.new do
   loop do
-    email = @outgoing.pop
+    email = @outgoing_mail.pop
     
     Mail.deliver do
       from     email[:from]
