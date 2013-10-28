@@ -51,17 +51,9 @@ end
 @threads << Thread.new do
   loop do
     email = @outgoing_mail.pop
-    
-    Mail.deliver do
-      from     email[:from]
-      to       email[:to]
-      subject  email[:subject]
-      body     email[:body]
+    email[:from] ||= email_config[:user_name]
 
-      email[:attachments].each do |attachment_path|
-        add_file attachment_path
-      end
-    end
+    Mailer.send(email)
   end
 end
 
