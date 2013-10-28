@@ -1,5 +1,6 @@
 # TODO
-* Log the hell out of *everything*.
+* Generate list of contributors, kick out those not on the list
+* Log internal classes
 * Thread-safe storage to keep track of current *Weeknotes #*, *current state* and
   who has *contributed* so far. (PStore?)
 * **WeeknotesPeriod** enumerable to figure out when to send nag emails
