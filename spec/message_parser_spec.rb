@@ -4,9 +4,8 @@ require "message_parser"
 describe MessageParser do
   subject { MessageParser }
 
-  it "accepts an email and a state" do
-    parser = subject.new('email', 'state')
-    parser.email.must_equal 'email'
+  it "accepts a state" do
+    parser = subject.new('state')
     parser.state.must_equal 'state'
   end
 
@@ -14,10 +13,10 @@ describe MessageParser do
     before do
       @email = mock('mail')
 
-      @state = mock('state')
+      @state = mock('state', :state => 'idle')
       @state.expects(:idle?).returns(true)
 
-      @parser = subject.new(@email, @state)
+      @parser = subject.new(@state)
     end
 
     it 'replies to non-triggering email in a confused manner' do
@@ -25,7 +24,7 @@ describe MessageParser do
       @email.expects(:from).returns('confused@bbc.co.uk').at_least_once
       @state.expects(:start!).never
 
-      @parser.parse
+      @parser.parse(@email)
       
       @parser.reply?.must_equal true
       response = @parser.response
@@ -41,7 +40,7 @@ describe MessageParser do
 
       @state.expects(:start!)
 
-      @parser.parse
+      @parser.parse(@email)
       @parser.reply?.must_equal true
 
       @parser.response[:to].must_equal :all
@@ -51,7 +50,7 @@ describe MessageParser do
   end
 
   describe "#reply?" do
-    subject { MessageParser.new('email', 'state') }
+    subject { MessageParser.new('state') }
 
     it 'no reply if there is no response set' do
       subject.response.must_be_nil

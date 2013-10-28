@@ -28,8 +28,8 @@ When(/^the subject is "(.*)"$/) do |subject|
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
-  @parser = MessageParser.new(@email, @state)
-  @parser.parse
+  @parser = MessageParser.new(@state)
+  @parser.parse(@email)
   @response = @parser.response
 
   if started =~ /not/

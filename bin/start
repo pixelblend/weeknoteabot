@@ -9,10 +9,11 @@ require 'mail'
 require 'logger'
 
 $:.unshift('./lib')
-require 'mailer'
 require 'message_parser'
 require 'weeknote_state'
+require 'mail_room'
 
+$logger     = Logger.new(STDOUT)
 config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
 
 begin
@@ -25,55 +26,16 @@ Mail.defaults do
   retriever_method :imap, email_config
 end
 
-@state         = WeeknoteState.new
-@incoming_mail = Queue.new
-@outgoing_mail = Queue.new
-@threads       = []
-@logger        = Logger.new(STDOUT)
+state         = WeeknoteState.new
+msg_parser    = MessageParser.new(state)
 
+incoming_mail = Queue.new
+outgoing_mail = Queue.new
+threads       = Array.new
 
 Thread.abort_on_exception = true
-@threads << Thread.new do
-  loop do
-    Mailer.check_for_new_email do |email|
-      @logger.info "Found new email #{email.subject}"
-      @incoming_mail << email
-    end
-    sleep(10)
-  end
-end
 
-@threads << Thread.new do
-  loop do
-    email = @incoming_mail.pop
-    @logger.info "Recieved email #{email.subject} for processing"
-    msg = MessageParser.new(email, @state)
-    msg.parse
-
-    if msg.reply?
-      @logger.info "Sent for repsonse #{email.subject}"
-      @outgoing_mail << msg.response 
-    else
-      @logger.info "Not responding to #{email.subject}"
-    end
-  end
-end
-
-@threads << Thread.new do
-  loop do
-    email = @outgoing_mail.pop
-    @logger.info "Sending email #{email[:subject]}"
-
-    email[:from] ||= email_config[:user_name]
-
-    begin
-      Mailer.send(email)
-    rescue Mailer::DeliveryError => e
-      @logger.warn "Could not send #{email[:subject]}: #{e}"
-    else
-      @logger.info "Sent #{email[:subject]}"
-    end
-  end
-end
-
-@threads.each(&:join)
+threads << MailRoom.check_mail(incoming_mail, sleep: 10)
+threads << MailRoom.parse_mail(incoming_mail, outgoing_mail, msg_parser)
+threads << MailRoom.send_mail(outgoing_mail)
+threads.each(&:join)

@@ -4,13 +4,14 @@ class MessageParser
   TEMPLATE_ROOT = File.join(File.dirname(__FILE__), '..', 'templates')
 
   attr_reader :email, :state, :response
-  def initialize(email, state)
-    @email = email
+
+  def initialize(state)
     @state = state
-    @response = nil
   end
 
-  def parse
+  def parse(email)
+    $logger.info "Processing state #{state.state}"
+    # check sender is in group
     return false unless state.idle?
 
     if email.subject.match(/new weeknotes/i)
