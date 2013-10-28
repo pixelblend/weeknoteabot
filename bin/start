@@ -6,6 +6,7 @@ require 'thread'
 
 require 'bundler/setup'
 require 'mail'
+require 'logger'
 
 $:.unshift('./lib')
 require 'mailer'
@@ -28,11 +29,14 @@ end
 @incoming_mail = Queue.new
 @outgoing_mail = Queue.new
 @threads       = []
+@logger        = Logger.new(STDOUT)
+
 
 Thread.abort_on_exception = true
 @threads << Thread.new do
   loop do
     Mailer.check_for_new_email do |email|
+      @logger.info "Found new email #{email.subject}"
       @incoming_mail << email
     end
     sleep(10)
@@ -42,19 +46,33 @@ end
 @threads << Thread.new do
   loop do
     email = @incoming_mail.pop
+    @logger.info "Recieved email #{email.subject} for processing"
     msg = MessageParser.new(email, @state)
     msg.parse
-    @outgoing_mail << msg.response if msg.reply?
+
+    if msg.reply?
+      @logger.info "Sent for repsonse #{email.subject}"
+      @outgoing_mail << msg.response 
+    else
+      @logger.info "Not responding to #{email.subject}"
+    end
   end
 end
 
 @threads << Thread.new do
   loop do
     email = @outgoing_mail.pop
+    @logger.info "Sending email #{email[:subject]}"
+
     email[:from] ||= email_config[:user_name]
 
-    sent = Mailer.send(email)
-    p 'omg not sent' unless sent
+    begin
+      Mailer.send(email)
+    rescue Mailer::DeliveryError => e
+      @logger.warn "Could not send #{email[:subject]}: #{e}"
+    else
+      @logger.info "Sent #{email[:subject]}"
+    end
   end
 end
 

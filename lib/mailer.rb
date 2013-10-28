@@ -1,6 +1,7 @@
 require 'mail'
 
 module Mailer
+  class DeliveryError < Exception; end
   FIND_ATTRIBUTES = {:what => :first, :order => :asc, :keys => ['NOT','SEEN']}
 
   # find unread emails, oldest first
@@ -18,8 +19,8 @@ module Mailer
     
     begin
       deliver(email)
-    rescue ArgumentError
-      false
+    rescue ArgumentError => e
+      raise DeliveryError, e
     end
   end
 

@@ -18,7 +18,7 @@ describe Mailer do
 
   it 'fails without a recipient' do
     @email.delete(:to)
-    Mailer.send(@email).must_equal false
+    proc { Mailer.send(@email) }.must_raise Mailer::DeliveryError
     Mail::TestMailer.deliveries.length.must_equal 0
   end
 
