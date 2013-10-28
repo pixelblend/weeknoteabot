@@ -13,9 +13,9 @@ class MessageParser
   def parse
     return false unless state.idle?
 
-    if email.subject == 'WEEKNOTES BEGIN'
+    if email.subject.match(/new weeknotes/i)
       @response = { :subject => email.subject, :body => email.body }
-      state.ready!
+      state.start!
     else
       @response = { :to => email.from, :subject => 'huh?', :body => render('not_ready') }
     end

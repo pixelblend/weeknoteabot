@@ -23,7 +23,7 @@ describe MessageParser do
     it 'replies to non-triggering email in a confused manner' do
       @email.expects(:subject).returns('My work this week').at_least_once
       @email.expects(:from).returns('confused@bbc.co.uk').at_least_once
-      @state.expects(:ready!).never
+      @state.expects(:start!).never
 
       @parser.parse
       
@@ -36,15 +36,15 @@ describe MessageParser do
     end
 
     it 'sends out triggering email and sets ready state' do
-      @email.expects(:subject).returns('WEEKNOTES BEGIN').at_least_once
+      @email.expects(:subject).returns('New Weeknotes').at_least_once
       @email.expects(:body).returns('Weeknotes please!').at_least_once
 
-      @state.expects(:ready!)
+      @state.expects(:start!)
 
       @parser.parse
       @parser.reply?.must_equal true
 
-      @parser.response[:subject].must_equal 'WEEKNOTES BEGIN'
+      @parser.response[:subject].must_equal 'New Weeknotes'
       @parser.response[:body].must_equal 'Weeknotes please!'
     end
   end
