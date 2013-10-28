@@ -12,6 +12,6 @@ afternoon is Monday morning.
 
 The sucker requesting the weeknotes that week.
 
-* **Group** 
+* **Contributors** 
 
 The rest of IRFS. This is determined by the contents of the Whereabouts API.
