@@ -2,12 +2,15 @@
 $PROGRAM_NAME='weeknoteabot'
 $stdout.sync = true
 
-require 'bundler/setup'
-require 'mail'
 require 'thread'
 
-require './lib/message_parser'
-require './lib/weeknote_state'
+require 'bundler/setup'
+require 'mail'
+
+$:.unshift('./lib')
+require 'mailer'
+require 'message_parser'
+require 'weeknote_state'
 
 config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
 
@@ -29,11 +32,8 @@ end
 Thread.abort_on_exception = true
 @threads << Thread.new do
   loop do
-    # find unread emails, oldest first
-    Mail.find(:what => :first, :order => :asc, :keys => ['NOT','SEEN']) do |email, imap, uid|
+    Mailer.check_for_new_email do |email|
       @incoming_mail << email
-      # mark as read
-      imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
     end
     sleep(10)
   end
@@ -53,7 +53,8 @@ end
     email = @outgoing_mail.pop
     email[:from] ||= email_config[:user_name]
 
-    Mailer.send(email)
+    sent = Mailer.send(email)
+    p 'omg not sent' unless sent
   end
 end
 

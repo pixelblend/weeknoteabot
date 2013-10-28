@@ -1,6 +1,18 @@
 require 'mail'
 
 module Mailer
+  FIND_ATTRIBUTES = {:what => :first, :order => :asc, :keys => ['NOT','SEEN']}
+
+  # find unread emails, oldest first
+  def self.check_for_new_email(&blk)
+    Mail.find(FIND_ATTRIBUTES) do |email, imap, uid|
+      blk.call(email)
+
+      # mark as read
+      imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
+    end
+  end
+
   def self.send(email)
     email[:attachments] ||= []
     
