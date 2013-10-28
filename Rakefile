@@ -6,14 +6,27 @@ require 'yaml'
 
 desc "Generates config.yml file for email"
 task :config do
-  config = {}
-  config[:address] = Readline.readline("Address: ", true)
-  config[:port] = Readline.readline("Port: ", true).to_i
-  config[:user_name] = Readline.readline("Email: ", true)
-  config[:password] = Readline.readline("Password: ", true)
-  config[:enable_ssl] = Readline.readline("Use SSL? (y/n): ", true).downcase == 'y'
+  puts "This task generates your config for sending and receiving email."
+  puts "Sending:"
+  sending = {}
+  sending[:method] = Readline.readline("Method: ", true).to_sym
+  sending[:address] = Readline.readline("Address: ", true)
+  sending[:port] = Readline.readline("Port: ", true).to_i
+  sending[:domain] = Readline.readline("Port: ", true)
+  sending[:user_name] = Readline.readline("Email: ", true)
+  sending[:password] = Readline.readline("Password: ", true)
+  sending[:enable_start_ttls_auto] = Readline.readline("Use TTLS? (y/n): ", true).downcase == 'y'
 
-  File.open('./config.yml', 'w'){ |f| f.write(config.to_yaml) }
+  puts "Receiving:"
+  receiving = {}
+  receiving[:method] = Readline.readline("Method (imap): ", true).to_sym
+  receiving[:address] = Readline.readline("Address: ", true)
+  receiving[:port] = Readline.readline("Port: ", true).to_i
+  receiving[:user_name] = Readline.readline("Email: ", true)
+  receiving[:password] = Readline.readline("Password: ", true)
+  receiving[:enable_ssl] = Readline.readline("Use SSL? (y/n): ", true).downcase == 'y'
+
+  File.open('./config.yml', 'w'){ |f| f.write({:sending => sending, :receiving => receiving}.to_yaml) }
   puts "Written to config.yml"
 end
 

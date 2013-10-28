@@ -23,7 +23,8 @@ rescue Errno::ENOENT => e
 end
 
 Mail.defaults do
-  retriever_method :imap, email_config
+  retriever_method email_config[:receive].delete(:method), email_config[:receive]
+  delivery_method  email_config[:send].delete(:method), email_config[:send]
 end
 
 state         = WeeknoteState.new
