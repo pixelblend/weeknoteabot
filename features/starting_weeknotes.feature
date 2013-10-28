@@ -1,21 +1,19 @@
 Feature: Starting Weeknotes
 
-  Scenario: State is idle, receive starter email from compiler.
-    Given a state of idle
-    When an email is recieved
-    And the sender is a contributor
-    And the subject is New Weeknotes
-    And the email is parsed
-    Then the state should be ready
-    And the response should be sent to the group
- 
-  Scenario: State is idle, non-starter email recieved.
-    Given a state of idle
-    When an email is recieved
-    And the sender is a contributor
-    And the subject is yadda yadda
-    And the email is parsed
-    Then the response should be sent to the sender
-    And the subject should be Sorry, why did you send this?
-    And the state should be idle
+  # Please see doc/GLOSSARY.mdown for a definition of terms.
 
+  Scenario: Starter email received
+    Given weeknotes haven't been started
+    When a contributor sends an email
+    And the subject is "New Weeknotes"
+    Then weeknotes will be started
+    And that contributor becomes the compiler
+    And everyone will receive an email
+
+  Scenario: Non-starter email received
+    Given weeknotes haven't been started
+    When a contributor sends an email
+    And the subject is "blah blah blah"
+    Then weeknotes will not be started
+    And the contributor will receive an email telling them so
+    And the subject will be "Sorry, why did you send this?"

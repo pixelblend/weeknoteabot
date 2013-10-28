@@ -8,15 +8,13 @@ Before do
   @state = WeeknoteState.new
 end
 
-Given(/^a state of (.*)$/) do |state|
-  @state.state.must_equal state
+Given(/^weeknotes haven't been started$/) do
+  @state.state.must_equal 'idle'
 end
 
-When(/^an email is recieved$/) do
+When(/^a (contributor|stranger) sends an email$/) do |sender_type|
   @email = Mail.new
-end
 
-When(/^the sender is a (contributor|stranger)$/) do |sender_type|
   case sender_type
   when 'contributor'
     @email.from = 'known@bbc.co.uk'
@@ -25,32 +23,36 @@ When(/^the sender is a (contributor|stranger)$/) do |sender_type|
   end 
 end
 
-When(/^the subject is (.*)$/) do |subject|
+When(/^the subject is "(.*)"$/) do |subject|
   @email.subject = subject 
 end
 
-When(/^the email is parsed$/) do
+Then(/^weeknotes will( not)? be started$/) do |started|
   @parser = MessageParser.new(@email, @state)
   @parser.parse
   @response = @parser.response
-end
 
-Then(/^the state should be (.*)$/) do |state|
-  @state.state.must_equal state 
-end
-
-Then(/^the response should be sent to the (group|sender|compiler)$/) do |recipient|
-  case recipient
-  when 'sender'
-    @response[:to].must_equal @email.from
-  when 'group'
-    @response[:to].must_equal :all
+  if started =~ /not/
+    @state.state.must_equal 'idle'
   else
-    pending
+    @state.state.must_equal 'ready'
   end
 end
 
-Then(/^the subject should be (.*)$/) do |subject|
+Then(/^that contributor becomes the compiler$/) do
+  pending
+end
+
+Then(/^(everyone|the contributor) will receive an email.*$/) do |whom|
+  case whom
+  when 'everyone'
+    @response[:to].must_equal :all
+  when 'the contributor'
+    @response[:to].must_equal @email.from
+  end
+end
+
+Then(/^the subject will be "(.*)"$/) do |subject|
   @response[:subject].must_equal subject
 end
 
