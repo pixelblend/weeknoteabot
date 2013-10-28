@@ -2,6 +2,17 @@ require 'mail'
 
 module Mailer
   def self.send(email)
+    email[:attachments] ||= []
+    
+    begin
+      deliver(email)
+    rescue ArgumentError
+      false
+    end
+  end
+
+  private
+  def self.deliver(email)
     Mail.deliver do
       from     email[:from]
       to       email[:to]
