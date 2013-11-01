@@ -20,11 +20,11 @@ When(/^a (contributor|stranger) sends an email$/) do |sender_type|
     @email.from = 'known@bbc.co.uk'
   else
     pending
-  end 
+  end
 end
 
 When(/^the subject is "(.*)"$/) do |subject|
-  @email.subject = subject 
+  @email.subject = subject
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
