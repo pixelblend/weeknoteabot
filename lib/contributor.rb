@@ -4,7 +4,7 @@ require 'set'
 
 class Contributor
   WHEREABOUTS = 'http://where.prototype0.net/api/1/users.json?auth_token=XJzcxr4rqEyQ7q8b2BXh'
-  attr_accessor :owner
+  attr_accessor :compiler
 
   def all
     @contributors ||= Set.new(fetch)
@@ -14,19 +14,19 @@ class Contributor
     all.include?(email.downcase)
   end
 
-  def owner=(email)
+  def compiler=(email)
     if self.member?(email)
-      @owner = email
+      @compiler = email
     else
       false
     end
   end
 
-  def owner?(email=nil)
+  def compiler?(email=nil)
     if email.nil?
-      !owner.nil?
+      !compiler.nil?
     else
-      owner == email.downcase
+      compiler == email.downcase
     end
   end
 

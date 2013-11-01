@@ -21,7 +21,7 @@ describe Contributor do
     end
   end
 
-  describe 'owner' do
+  describe 'compiler' do
     before do
       subject.stubs(:request).returns([
         {'email' => 'dan@bbc.co.uk'},
@@ -29,20 +29,20 @@ describe Contributor do
       ])
     end
 
-    it 'sets a contributor as owner' do
-      subject.owner = 'tracy@bbc.co.uk'
+    it 'sets a contributor as compiler' do
+      subject.compiler = 'tracy@bbc.co.uk'
 
-      subject.owner.must_equal 'tracy@bbc.co.uk'
-      subject.owner?.must_equal true
-      subject.owner?('tracy@bbc.co.uk').must_equal true
-      subject.owner?('dan@bbc.co.uk').must_equal false
+      subject.compiler.must_equal 'tracy@bbc.co.uk'
+      subject.compiler?.must_equal true
+      subject.compiler?('tracy@bbc.co.uk').must_equal true
+      subject.compiler?('dan@bbc.co.uk').must_equal false
     end
 
     it 'prevents non-contributors from owning' do
-      subject.owner = 'someone@NOTbbc.co.uk'
-      subject.owner?('someone@NOTbbc.co.uk').must_equal false
+      subject.compiler = 'someone@NOTbbc.co.uk'
+      subject.compiler?('someone@NOTbbc.co.uk').must_equal false
 
-      subject.owner?.must_equal false
+      subject.compiler?.must_equal false
     end
   end
 end
