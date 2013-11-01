@@ -3,22 +3,30 @@ require 'erb'
 class MessageParser
   TEMPLATE_ROOT = File.join(File.dirname(__FILE__), '..', 'templates')
 
-  attr_reader :email, :state, :response
+  attr_reader :contributor, :email, :response, :state
 
-  def initialize(state)
+  def initialize(state, contributor)
     @state = state
+    @contributor = contributor
   end
 
   def parse(email)
     $logger.info "Processing state #{state.state}"
-    # check sender is in group
-    return false unless state.idle?
+    sender = email.from.first
 
-    if email.subject.match(/new weeknotes/i)
+    case
+    when !contributor.member?(sender)
+      $logger.info "#{sender} not a known contributor"
+      return false
+    when !state.idle?
+      $logger.info "#{state.state} state not processed yet"
+      return false
+    when email.subject.match(/new weeknotes/i)
       @response = { :to => :all, :subject => email.subject, :body => email.body }
+      contributor.compiler = sender
       state.start!
     else
-      @response = { :to => email.from, :subject => 'Sorry, why did you send this?', :body => render('not_ready') }
+      @response = { :to => sender, :subject => 'Sorry, why did you send this?', :body => render('not_ready') }
     end
   end
 

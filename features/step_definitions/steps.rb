@@ -3,9 +3,15 @@ require 'mail'
 
 require 'weeknote_state'
 require 'message_parser'
+require 'contributor'
 
 Before do
   @state = WeeknoteState.new
+  @contributor = Contributor.new
+
+  @contributor.stubs(:request).returns([
+    {'email' => 'known@bbc.co.uk'}
+  ])
 end
 
 Given(/^weeknotes haven't been started$/) do
@@ -28,7 +34,7 @@ When(/^the subject is "(.*)"$/) do |subject|
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
-  @parser = MessageParser.new(@state)
+  @parser = MessageParser.new(@state, @contributor)
   @parser.parse(@email)
   @response = @parser.response
 
@@ -40,7 +46,7 @@ Then(/^weeknotes will( not)? be started$/) do |started|
 end
 
 Then(/^that contributor becomes the compiler$/) do
-  pending
+  @contributor.compiler?('known@bbc.co.uk').must_equal true
 end
 
 Then(/^(everyone|the contributor) will receive an email.*$/) do |whom|
@@ -48,7 +54,7 @@ Then(/^(everyone|the contributor) will receive an email.*$/) do |whom|
   when 'everyone'
     @response[:to].must_equal :all
   when 'the contributor'
-    @response[:to].must_equal @email.from
+    @response[:to].must_equal @email.from.first
   end
 end
 

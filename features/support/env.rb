@@ -1,4 +1,5 @@
 require 'minitest/spec'
+require 'mocha/setup'
 
 World(MiniTest::Assertions)
 MiniTest::Spec.new(nil)
