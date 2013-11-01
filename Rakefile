@@ -31,7 +31,7 @@ task :config do
 end
 
 Rake::TestTask.new do |t|
-  t.pattern = "spec/*_spec.rb"
+  t.pattern = "spec/*/*_spec.rb"
 end
 
 Cucumber::Rake::Task.new do |t|
