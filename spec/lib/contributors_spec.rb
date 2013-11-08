@@ -12,6 +12,20 @@ describe Contributors do
     end
   end
 
+  describe 'submitters' do
+    subject { Contributors.new(['dan@bbc.co.uk', 'tracy@bbc.co.uk']) }
+
+    it 'returns a contributor list with a compiler' do
+      contributors = subject.submitted! 'tracy@bbc.co.uk'
+      contributors.submitters.must_equal ['tracy@bbc.co.uk']
+    end
+
+    it 'returns nonsubmission list' do
+      contributors = subject.submitted! 'tracy@bbc.co.uk'
+      contributors.non_submitters.must_equal ['dan@bbc.co.uk']
+    end
+  end
+
   describe 'compiler' do
     subject { Contributors.new(['dan@bbc.co.uk', 'tracy@bbc.co.uk']) }
 

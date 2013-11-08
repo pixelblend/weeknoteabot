@@ -1,10 +1,13 @@
 require 'set'
 require 'values'
 
-class Contributors < Value.new(:members, :compiler)
-  def initialize(members=[], compiler=false)
-    members ||= Set.new(members.collect(&:downcase))
-    super(members, compiler)
+class Contributors < Value.new(:members, :compiler, :submitters)
+  def initialize(members=[], compiler=false, submitters=[])
+    members    ||= Set.new(members.collect(&:downcase))
+    submitters ||= Set.new(submitters.collect(&:downcase))
+    compiler   = compiler == false ? compiler : compiler.downcase
+
+    super(members, compiler, submitters)
   end
 
   def member?(email)
@@ -21,9 +24,21 @@ class Contributors < Value.new(:members, :compiler)
 
   def compiler!(email)
     if member?(email)
-      Contributors.new(@members, email.downcase)
+      Contributors.new(@members, email)
     else
       self
     end
+  end
+
+  def submitted!(email)
+    if member?(email)
+      Contributors.new(@members, @compiler, @submitters << email)
+    else
+      self
+    end
+  end
+
+  def non_submitters
+    @members - @submitters
   end
 end

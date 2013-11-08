@@ -9,6 +9,10 @@ Before do
   @contributors = Contributors.new(['known@bbc.co.uk'])
 end
 
+Given(/^weeknotes have been started$/) do
+  @state = WeeknoteState.new('ready')
+end
+
 Given(/^weeknotes haven't been started$/) do
   @state = WeeknoteState.new('idle')
 end
@@ -26,6 +30,10 @@ end
 
 When(/^the subject is "(.*)"$/) do |subject|
   @email.subject = subject
+end
+
+When(/^the email has an attachment$/) do
+  @email.attachments << Tempfile.new('weeknote_attachment')
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
