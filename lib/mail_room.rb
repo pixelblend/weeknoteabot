@@ -29,14 +29,14 @@ module MailRoom
         if msg_parser.reply?
           $logger.info "Sent for repsonse #{email.subject}"
 
-          outgoing_queue.push msg_parser.response 
+          outgoing_queue.push msg_parser.response
         else
           $logger.info "Not responding to #{email.subject}"
         end
       end
     end
   end
-  
+
   def self.send_mail(queue)
     Thread.new do
       loop do
