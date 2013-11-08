@@ -2,41 +2,20 @@
 $PROGRAM_NAME='weeknoteabot'
 $stdout.sync = true
 
-require 'thread'
-
 require 'bundler/setup'
-require 'mail'
+
 require 'logger'
+require '../mailer'
+require '../mail_room'
 
-$:.unshift('./lib')
-require 'message_parser'
-require 'weeknote_state'
-require 'mail_room'
-
-$logger     = Logger.new(STDOUT)
-config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
+$logger = Logger.new(STDOUT)
 
 begin
+  config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
   email_config = YAML::load_file(config_file)
+  Mailer.configure(email_config)
 rescue Errno::ENOENT => e
   abort "config.yml not found. Use rake config to generate one."
 end
 
-Mail.defaults do
-  retriever_method email_config[:receive].delete(:method), email_config[:receive]
-  delivery_method  email_config[:send].delete(:method), email_config[:send]
-end
-
-state         = WeeknoteState.new
-msg_parser    = MessageParser.new(state)
-
-incoming_mail = Queue.new
-outgoing_mail = Queue.new
-threads       = Array.new
-
-Thread.abort_on_exception = true
-
-threads << MailRoom.check_mail(incoming_mail, sleep: 10)
-threads << MailRoom.parse_mail(incoming_mail, outgoing_mail, msg_parser)
-threads << MailRoom.send_mail(outgoing_mail)
-threads.each(&:join)
+MailRoom.start!

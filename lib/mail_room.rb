@@ -1,6 +1,24 @@
-require 'mailer'
+require 'thread'
+
+require_relative 'mailer'
+require_relative 'weeknote_state'
+require_relative 'contributor'
+require_relative 'responder'
 
 module MailRoom
+  def self.start!
+    incoming_mail = Queue.new
+    outgoing_mail = Queue.new
+    threads       = Array.new
+
+    Thread.abort_on_exception = true
+
+    threads << self.check_mail(incoming_mail)
+    threads << self.parse_mail(incoming_mail, outgoing_mail)
+    threads << self.send_mail(outgoing_mail)
+    threads.each(&:join)
+  end
+
   def self.check_mail(queue, sleep: 10)
     Thread.new do
       loop do
@@ -17,19 +35,22 @@ module MailRoom
     end
   end
 
-  def self.parse_mail(incoming_queue, outgoing_queue, msg_parser)
+  def self.parse_mail(incoming_queue, outgoing_queue)
     Thread.new do
+      state = WeeknoteState.new('idle')
+      contributors = Contributors.new(FetchFromWhereabouts.fetch)
+
       loop do
         email = incoming_queue.pop
 
         $logger.info "Recieved email #{email.subject} for processing"
 
-        msg_parser.parse(email)
+        reply, state, contributors = Responder.respond_to(email, state, contributors)
 
-        if msg_parser.reply?
-          $logger.info "Sent for repsonse #{email.subject}"
+        if reply
+          $logger.info "Sent for response #{email.subject}"
 
-          outgoing_queue.push msg_parser.response
+          outgoing_queue.push reply
         else
           $logger.info "Not responding to #{email.subject}"
         end

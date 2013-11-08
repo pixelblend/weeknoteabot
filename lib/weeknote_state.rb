@@ -1,9 +1,4 @@
-require 'state_machine'
+require 'values'
 
-class WeeknoteState
-  state_machine :state, :initial => :idle do
-    event :start do
-      transition :idle => :ready
-    end
-  end
+class WeeknoteState < Value.new(:state)
 end

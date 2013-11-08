@@ -4,6 +4,13 @@ module Mailer
   class DeliveryError < Exception; end
   FIND_ATTRIBUTES = {:what => :first, :order => :asc, :keys => ['NOT','SEEN']}
 
+  def self.configure(email_config)
+    Mail.defaults do
+      retriever_method email_config[:receive].delete(:method), email_config[:receive]
+      delivery_method  email_config[:send].delete(:method), email_config[:send]
+    end
+  end
+
   # find unread emails, oldest first
   def self.check_for_new_email(&blk)
     Mail.find(FIND_ATTRIBUTES) do |email, imap, uid|
@@ -16,7 +23,7 @@ module Mailer
 
   def self.send(email)
     email[:attachments] ||= []
-    
+
     begin
       deliver(email)
     rescue ArgumentError => e

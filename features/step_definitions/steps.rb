@@ -2,20 +2,15 @@ $:.unshift(File.dirname(__FILE__) + '/../../lib')
 require 'mail'
 
 require 'weeknote_state'
-require 'message_parser'
-require 'contributor'
+require 'contributors'
+require 'responder'
 
 Before do
-  @state = WeeknoteState.new
-  @contributor = Contributor.new
-
-  @contributor.stubs(:request).returns([
-    {'email' => 'known@bbc.co.uk'}
-  ])
+  @contributors = Contributors.new(['known@bbc.co.uk'])
 end
 
 Given(/^weeknotes haven't been started$/) do
-  @state.state.must_equal 'idle'
+  @state = WeeknoteState.new('idle')
 end
 
 When(/^a (contributor|stranger) sends an email$/) do |sender_type|
@@ -34,9 +29,7 @@ When(/^the subject is "(.*)"$/) do |subject|
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
-  @parser = MessageParser.new(@state, @contributor)
-  @parser.parse(@email)
-  @response = @parser.response
+  @response, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
 
   if started =~ /not/
     @state.state.must_equal 'idle'
@@ -46,7 +39,7 @@ Then(/^weeknotes will( not)? be started$/) do |started|
 end
 
 Then(/^that contributor becomes the compiler$/) do
-  @contributor.compiler?('known@bbc.co.uk').must_equal true
+  @contributors.compiler?('known@bbc.co.uk').must_equal true
 end
 
 Then(/^(everyone|the contributor) will receive an email.*$/) do |whom|

@@ -5,17 +5,12 @@ Here are the states known to the Weeknoteabot. The states are linear and circula
 
 1. Idle
   Nothing is happening. General emails are replied to in a confused manner.
-2. Initialised
-  Crafted email sent from the compiler requesting a round of weeknotes.
-3. Ready
-  Opening email is sent to the group.
-4. Open
-  Now accepting contributions. Emails received are copied to the rest of the group. Email contents and attachments are saved.
-4. Gentle Nag
+2. Ready
+  Crafted email sent from the compiler requesting a round of weeknotes. Opening email is sent to the group.
+  Emails received are copied to the rest of the group. Email contents and attachments are saved.
+3. Gentle Nag
   First nag email sent after the first period to members who have not responded.
 4. Aggro Nag
   Second nag email goes out after the second period to members who have not responded.
-5. Wind-down
-  Awaiting the last of the emails.
-6. Compilation
+5. Compilation
   Sends compiled email to the complier contianing all notes and attachments. Moves back to idle mode.

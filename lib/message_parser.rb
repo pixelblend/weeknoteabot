@@ -14,13 +14,13 @@ class MessageParser
     $logger.info "Processing state #{state.state}"
     sender = email.from.first
 
-    case
-    when !contributor.member?(sender)
+    if !contributor.member?(sender)
       $logger.info "#{sender} not a known contributor"
       return false
-    when !state.idle?
-      $logger.info "#{state.state} state not processed yet"
-      return false
+    else
+      # process
+    end
+=begin
     when email.subject.match(/new weeknotes/i)
       @response = { :to => :all, :subject => email.subject, :body => email.body }
       contributor.compiler = sender
@@ -28,6 +28,7 @@ class MessageParser
     else
       @response = { :to => sender, :subject => 'Sorry, why did you send this?', :body => render('not_ready') }
     end
+=end
   end
 
   def reply?

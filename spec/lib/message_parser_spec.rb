@@ -2,6 +2,8 @@ require_relative "../spec_helper"
 require "message_parser"
 
 describe MessageParser do
+end
+__END__
   subject { MessageParser }
 
   it "accepts a state and a contributor list" do
