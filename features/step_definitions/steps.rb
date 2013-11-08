@@ -20,7 +20,7 @@ When(/^a (contributor|stranger) sends an email$/) do |sender_type|
   when 'contributor'
     @email.from = 'known@bbc.co.uk'
   else
-    pending
+    @email.from = 'unknown@itv.com'
   end
 end
 
@@ -42,12 +42,14 @@ Then(/^that contributor becomes the compiler$/) do
   @contributors.compiler?('known@bbc.co.uk').must_equal true
 end
 
-Then(/^(everyone|the contributor) will receive an email.*$/) do |whom|
+Then(/^(everyone|the contributor|the stranger) will receive an email.*$/) do |whom|
   case whom
   when 'everyone'
     @response[:to].must_equal :all
   when 'the contributor'
-    @response[:to].must_equal @email.from.first
+    @response[:to].must_equal 'known@bbc.co.uk'
+  when 'the stranger'
+    @response[:to].must_equal 'unknown@itv.com'
   end
 end
 
