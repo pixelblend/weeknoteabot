@@ -4,13 +4,17 @@ class EmailResponse
   class Ready
     def parse(email, contributors)
       if email.subject.match(/end weeknotes/i)
-        #
+        compile_weeknotes(email, contributors)
       else
         log_weeknotes(email, contributors)
       end
     end
 
     private
+    def compile_weeknotes(email, contributors)
+      raise NotImplementedError
+    end
+
     def log_weeknotes(email, contributors)
       contributors = contributors.submitted!(email.from.first)
       weeknote = WeeknoteSubmissions.instance.add email

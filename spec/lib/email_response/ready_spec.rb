@@ -30,40 +30,26 @@ describe EmailResponse::Ready do
   end
 
   it 'returns idle state when closing email is sent' do
-    skip('Waiting for compilation class')
     email.stubs(:subject).returns('End weeknotes')
 
     response, state, new_contributors = subject.parse(email, contributors)
 
     state.state.must_equal 'idle'
-
-    response.must_equal({
-      :to => 'dan@bbc.co.uk'
-    })
   end
 
   describe 'emails with attachments' do
     let(:attachment) do
       attachment = stub(:attachment).tap do |a|
-        a.stubs(:content_type)
         a.stubs(:filename)
         a.stubs(:read)
       end
-      #email.stubs(:attachments).returns([ attachment ])
     end
 
     it 'keeps attachments in relayed messages' do
-      skip('figure out attachments')
-      Weeknotes.stubs(:add).with(email).returns(attachments)
-
+      email.stubs(:attachments).returns([ attachment ])
       response, state, new_contributors = subject.parse(email, contributors)
 
-      response.must_equal({
-        :to => :all, :subject => 'What I did this week', :body => 'Lots of stuff...'
-      })
-      state.state.must_equal 'ready'
+      response[:attachments].length.must_equal 1
     end
-
-    it 'saves emails out for compilation later'
   end
 end
