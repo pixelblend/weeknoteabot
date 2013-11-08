@@ -6,8 +6,8 @@ module Mailer
 
   def self.configure(email_config)
     Mail.defaults do
-      retriever_method email_config[:receive].delete(:method), email_config[:receive]
-      delivery_method  email_config[:send].delete(:method), email_config[:send]
+      retriever_method email_config[:receiving].delete(:method), email_config[:receiving]
+      delivery_method  email_config[:sending].delete(:method), email_config[:sending]
     end
   end
 

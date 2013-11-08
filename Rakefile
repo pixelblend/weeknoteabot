@@ -12,7 +12,7 @@ task :config do
   sending[:method] = Readline.readline("Method: ", true).to_sym
   sending[:address] = Readline.readline("Address: ", true)
   sending[:port] = Readline.readline("Port: ", true).to_i
-  sending[:domain] = Readline.readline("Port: ", true)
+  sending[:domain] = Readline.readline("Domain: ", true)
   sending[:user_name] = Readline.readline("Email: ", true)
   sending[:password] = Readline.readline("Password: ", true)
   sending[:enable_start_ttls_auto] = Readline.readline("Use TTLS? (y/n): ", true).downcase == 'y'
