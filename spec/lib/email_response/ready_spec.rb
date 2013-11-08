@@ -5,11 +5,10 @@ describe EmailResponse::Ready do
   subject { EmailResponse::Ready.new }
   let(:contributors) { Contributors.new(['dan@bbc.co.uk']) }
   let(:email) do
-    stub(:email).tap do |e|
-      e.stubs(:from).returns(['dan@bbc.co.uk'])
-      e.stubs(:subject).returns('What I did this week')
-      e.stubs(:body).returns('Lots of stuff...')
-      e.stubs(:attachments).returns([])
+    Mail.new do
+      from 'dan@bbc.co.uk'
+      subject 'What I did this week'
+      body 'Lots of stuff...'
     end
   end
 

@@ -9,7 +9,7 @@ class WeeknoteSubmissions
 
   def add(email)
     msg = {
-      :from => email.from.first,
+      :from => email[:from].value,
       :body => email.body.to_s,
       :files => parse_files(email.attachments)
     }
