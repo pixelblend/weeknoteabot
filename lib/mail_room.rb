@@ -1,9 +1,10 @@
 require 'thread'
 
-require_relative 'mailer'
-require_relative 'weeknote_state'
-require_relative 'contributor'
-require_relative 'responder'
+require 'mailer'
+require 'weeknote_state'
+require 'contributors'
+require 'responder'
+require 'fetch_from_whereabouts'
 
 module MailRoom
   def self.start!

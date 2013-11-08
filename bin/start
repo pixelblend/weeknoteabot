@@ -3,10 +3,11 @@ $PROGRAM_NAME='weeknoteabot'
 $stdout.sync = true
 
 require 'bundler/setup'
-
 require 'logger'
-require '../mailer'
-require '../mail_room'
+
+$:.unshift(File.join(File.dirname(__FILE__)+'/../lib/'))
+require 'mailer'
+require 'mail_room'
 
 $logger = Logger.new(STDOUT)
 
