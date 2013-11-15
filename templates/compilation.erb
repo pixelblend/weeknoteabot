@@ -1,0 +1,20 @@
+Here are the compiled weeknotes for this week:
+
+<% messages.each do |msg| %>
+<%= msg[:from] %> said:
+
+<%= msg[:body] %>
+
+<% if msg.has_key?(:attachments) %>
+They also attached the following files:
+<%= msg[:attachments].collect{|a| a[:name]}.join(', ') %>
+<% end %>
+----
+<% end %>
+
+All attachments are attached as a zip file.
+
+Thanks for doing weeknotes!
+
+-- Weeknoteabot
+

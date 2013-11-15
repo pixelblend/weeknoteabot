@@ -1,7 +1,8 @@
 require 'zipruby'
+require 'tempfile'
 
 class WeeknoteZipper
-  def initialize(files=[])
+  def initialize(files)
     @files = differentiate_filenames(files)
   end
 

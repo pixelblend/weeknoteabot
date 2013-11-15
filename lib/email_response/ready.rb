@@ -19,12 +19,11 @@ class EmailResponse
       response = {
         :to => contributors.compiler,
         :subject => 'Weeknotes compilation',
-        :body => 'Hello, here are the weeknotes',
-        :attachments => zipped_attachments
+        :body => Template.render('compilation', :messages => weeknotes[:messages]),
+        :attachments => [{:name => 'weeknotes.zip', :file => zipped_attachments}]
       }
 
-      # also send a group email saying thanks
-
+      # TODO: also send a group email saying thanks
       [response, WeeknoteState.new('idle'), contributors]
     end
 

@@ -1,6 +1,7 @@
 require_relative '../spec_helper'
 require 'mailer'
 require 'tempfile'
+require 'pathname'
 
 describe Mailer do
   before do

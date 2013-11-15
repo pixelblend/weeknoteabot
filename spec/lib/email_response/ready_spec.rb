@@ -41,7 +41,10 @@ describe EmailResponse::Ready do
 
   it 'sends compiled emails when closing email is sent' do
     weeknotes = {
-      :messages => [{:from => ''}],
+      :messages => [{
+        :from => 'dan@bbc.co.uk', :body => 'I did loads!',
+        :attachments => [{:name => 'file1.txt'}]
+      }],
       :attachments => []
     }
 
@@ -51,6 +54,14 @@ describe EmailResponse::Ready do
     email.stubs(:subject).returns('End weeknotes')
 
     response, state, new_contributors = subject.parse(email, contributors)
+    attachments = response[:attachments]
+
+    attachments.length.must_equal 1
+    attachments[0][:name].must_equal 'weeknotes.zip'
+    attachments[0][:file].must_equal weeknote_zip
+
+    response[:body].must_match 'dan@bbc.co.uk'
+    response[:body].must_match 'file1.txt'
   end
 
   describe 'emails with attachments' do
