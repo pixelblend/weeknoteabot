@@ -1,4 +1,5 @@
 require 'weeknote_submissions'
+require 'weeknote_zipper'
 
 class EmailResponse
   class Ready
@@ -12,7 +13,19 @@ class EmailResponse
 
     private
     def compile_weeknotes(email, contributors)
-      raise NotImplementedError
+      weeknotes = WeeknoteSubmissions.instance.compile!
+      zipped_attachments = WeeknoteZipper.new(weeknotes[:attachments]).zip!
+
+      response = {
+        :to => contributors.compiler,
+        :subject => 'Weeknotes compilation',
+        :body => 'Hello, here are the weeknotes',
+        :attachments => zipped_attachments
+      }
+
+      # also send a group email saying thanks
+
+      [response, WeeknoteState.new('idle'), contributors]
     end
 
     def log_weeknotes(email, contributors)
@@ -23,7 +36,7 @@ class EmailResponse
         :to => :all,
         :subject => "Weeknotes submission from #{weeknote[:from]}",
         :body => weeknote[:body],
-        :attachments => weeknote[:files]
+        :attachments => weeknote[:attachments]
       }
 
       [response, WeeknoteState.new('ready'), contributors]

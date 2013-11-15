@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'values'
 gem 'mail'
 gem 'rake'
+gem 'zipruby'
 
 group :deployment do
   gem 'foreman'

@@ -25,15 +25,16 @@ describe WeeknoteSubmissions do
     parsed.must_equal({
       :from => 'dan@bbc.co.uk',
       :body => 'This is what I did...',
-      :files => []
+      :attachments => []
     })
   end
 
   it "compiles emails" do
     parsed = subject.add(email)
 
-    comp = subject.compilation
-    comp.length.must_equal 1
+    comp = subject.compile
+    comp[:messages].length.must_equal 1
+    comp[:attachments].length.must_equal 0
   end
 
   describe "emails with attachments" do
@@ -50,15 +51,24 @@ describe WeeknoteSubmissions do
 
     it 'stores attachments' do
       parsed = subject.add(email)
-      parsed[:files].length.must_equal 1
-      attached = parsed[:files].first
+      parsed[:attachments].length.must_equal 1
+      attached = parsed[:attachments].first
+      attached[:name].must_equal 'README.mdown'
+      attached[:file].must_be_instance_of File
+    end
+
+    it 'flattens submitted attachments' do
+      subject.add(email)
+      subject.attachments.length.must_equal 1
+      attached = subject.attachments.first
+
       attached[:name].must_equal 'README.mdown'
       attached[:file].must_be_instance_of File
     end
 
     it 'deletes attachments on clear' do
       parsed = subject.add(email)
-      attached = parsed[:files][0][:file]
+      attached = parsed[:attachments][0][:file]
       attached_path = Pathname.new(attached)
       attached_path.exist?.must_equal true
 

@@ -11,7 +11,7 @@ class WeeknoteSubmissions
     msg = {
       :from => email[:from].value,
       :body => email.body.to_s,
-      :files => parse_files(email.attachments)
+      :attachments => parse_files(email.attachments)
     }
 
     @storage << msg
@@ -21,7 +21,7 @@ class WeeknoteSubmissions
   def clear!
     # unlink temp files
     @storage.each do |s|
-      s.fetch(:files, []).each do |f|
+      s.fetch(:attachments, []).each do |f|
         f[:file].close
         f[:file].unlink
       end
@@ -30,8 +30,17 @@ class WeeknoteSubmissions
     initialize
   end
 
-  def compilation
-    @storage
+  def compile
+    {
+      :messages => @storage,
+      :attachments => attachments
+    }
+  end
+
+  def attachments
+    @storage.map do |s|
+      s[:attachments]
+    end.flatten
   end
 
   private

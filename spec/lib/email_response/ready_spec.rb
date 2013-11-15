@@ -29,11 +29,28 @@ describe EmailResponse::Ready do
   end
 
   it 'returns idle state when closing email is sent' do
+    WeeknoteZipper.any_instance.expects(:zip!).once
+    WeeknoteSubmissions.instance.expects(:compile!).returns({}).once
+    Template.expects(:render).once
     email.stubs(:subject).returns('End weeknotes')
 
     response, state, new_contributors = subject.parse(email, contributors)
 
     state.state.must_equal 'idle'
+  end
+
+  it 'sends compiled emails when closing email is sent' do
+    weeknotes = {
+      :messages => [{:from => ''}],
+      :attachments => []
+    }
+
+    weeknote_zip = stub
+    WeeknoteZipper.any_instance.stubs(:zip!).returns(weeknote_zip)
+    WeeknoteSubmissions.instance.expects(:compile!).returns(weeknotes).once
+    email.stubs(:subject).returns('End weeknotes')
+
+    response, state, new_contributors = subject.parse(email, contributors)
   end
 
   describe 'emails with attachments' do

@@ -48,6 +48,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     values (1.5.0)
+    zipruby (0.3.6)
 
 PLATFORMS
   ruby
@@ -60,3 +61,4 @@ DEPENDENCIES
   pry-debugger
   rake
   values
+  zipruby
