@@ -6,3 +6,5 @@
 ##Post-MVP:
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
+* Reply to 'weeknotes start' emails when state is ready
+* Email compiler confirming they are in charge of weeknotes
