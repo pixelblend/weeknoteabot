@@ -1,6 +1,8 @@
 # TODO
-* Generate list of contributors, kick out those not on the list
+* Email contributors that weeknotes is over when compilation is sent out to compiler
 * **WeeknotesPeriod** enumerable to figure out when to send nag emails
 * Class to defer nag emails - Run thread, sleep for period X, trigger email
-* **WeeknotesCompiler** - Zips up attachments, collects all contributions and
-  emails weeknote compiler.
+
+##Post-MVP:
+* Source contributors list from somewhere decent
+* Add post-compilation period, email goes to list, sender is told off
