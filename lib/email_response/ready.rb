@@ -23,6 +23,9 @@ class EmailResponse
         :attachments => [{:name => 'weeknotes.zip', :file => zipped_attachments}]
       }
 
+      # clear Tempfiles from this batch of submissions
+      WeeknoteSubmissions.instance.clear!
+
       # TODO: also send a group email saying thanks
       [response, WeeknoteState.new('idle'), contributors]
     end

@@ -40,8 +40,6 @@ class WeeknoteSubmissions
       :attachments => attachments
     }
 
-    clear!
-
     compiled
   end
 

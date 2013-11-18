@@ -76,12 +76,5 @@ describe WeeknoteSubmissions do
 
       attached_path.exist?.must_equal false
     end
-
-    it 'clears attachments on compile' do
-      subject.expects(:clear!).once
-
-      subject.add(email)
-      subject.compile!
-    end
   end
 end
