@@ -8,10 +8,14 @@ Nag email is sent on Thursday afternoon, the Argro Nag email is sent on
 Friday morning. Weeknotabot does not work weekends; the period after Friday
 afternoon is Monday morning.
 
-* **Compiler** 
+* **Compiler**
 
 The sucker requesting the weeknotes that week.
 
-* **Contributors** 
+* **Contributors**
 
 The rest of IRFS. This is determined by the contents of the Whereabouts API.
+
+* **Submitters**
+
+Contributors that write weeknotes.
