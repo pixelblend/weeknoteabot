@@ -7,6 +7,8 @@ class EmailResponse
     case state
     when 'idle'
       EmailResponse::Idle.new
+    when 'ready'
+      EmailResponse::Ready.new
     else
       raise GenerateError, "No response for state #{state}"
     end

@@ -18,6 +18,10 @@ class WeeknoteSubmissions
     msg
   end
 
+  def count
+    @storage.length
+  end
+
   def clear!
     # unlink temp files
     @storage.each do |s|

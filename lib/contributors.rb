@@ -30,6 +30,10 @@ class Contributors < Value.new(:members, :compiler, :submitters)
     end
   end
 
+  def submitted?(email)
+    @submitters.include?(email.downcase)
+  end
+
   def submitted!(email)
     if member?(email)
       Contributors.new(@members, @compiler, @submitters << email)

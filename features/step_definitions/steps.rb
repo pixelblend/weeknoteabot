@@ -65,3 +65,18 @@ Then(/^the subject will be "(.*)"$/) do |subject|
   @response[:subject].must_equal subject
 end
 
+Then(/^the contents of the email are saved for later$/) do
+  @response, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  WeeknoteSubmissions.instance.count.must_equal 1
+end
+
+Then(/^it is noted that the contributor has submitted weeknotes$/) do
+  @contributors.submitted?('known@bbc.co.uk').must_equal true
+end
+
+Then(/^everyone will receive the email$/) do
+  @response[:to].must_equal :all
+  @response[:subject].must_equal "Weeknotes submission from known@bbc.co.uk"
+  @response[:body].must_equal @email.body
+end
+
