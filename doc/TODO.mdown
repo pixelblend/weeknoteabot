@@ -1,5 +1,4 @@
 # TODO
-* **WeeknotesPeriod** enumerable to figure out when to send nag emails
 * Class to defer nag emails - Run thread, sleep for period X, trigger email
 
 ##Post-MVP:
