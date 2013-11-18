@@ -46,12 +46,14 @@ module MailRoom
 
         $logger.info "Recieved email #{email.subject} for processing"
 
-        reply, state, contributors = Responder.respond_to(email, state, contributors)
+        replies, state, contributors = Responder.respond_to(email, state, contributors)
 
-        if reply
-          $logger.info "Sent for response #{email.subject}"
+        if replies.length > 0
+          replies.each do |reply|
+            $logger.info "Sent for response #{email.subject}"
 
-          outgoing_queue.push reply
+            outgoing_queue.push reply
+          end
         else
           $logger.info "Not responding to #{email.subject}"
         end

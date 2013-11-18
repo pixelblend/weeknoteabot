@@ -13,9 +13,10 @@ describe EmailResponse::Ready do
   end
 
   it 'relays messages to the rest of the contributors' do
-    response, state, new_contributors = subject.parse(email, contributors)
+    responses, state, new_contributors = subject.parse(email, contributors)
 
-    response.must_equal({
+    responses.length.must_equal 1
+    responses.first.must_equal({
       :to => :all, :subject => 'Weeknotes submission from dan@bbc.co.uk',
       :body => 'Lots of stuff...', :attachments => []
     })
@@ -23,7 +24,7 @@ describe EmailResponse::Ready do
   end
 
   it 'marks the sender as a submitter to weeknotes' do
-    response, state, new_contributors = subject.parse(email, contributors)
+    responses, state, new_contributors = subject.parse(email, contributors)
 
     new_contributors.submitters.must_equal ['dan@bbc.co.uk']
   end
@@ -53,7 +54,11 @@ describe EmailResponse::Ready do
     WeeknoteSubmissions.instance.expects(:compile!).returns(weeknotes).once
     email.stubs(:subject).returns('End weeknotes')
 
-    response, state, new_contributors = subject.parse(email, contributors)
+    responses, state, new_contributors = subject.parse(email, contributors)
+
+    responses.length.must_equal 1
+    response = responses.first
+
     attachments = response[:attachments]
 
     attachments.length.must_equal 1
@@ -74,9 +79,9 @@ describe EmailResponse::Ready do
 
     it 'keeps attachments in relayed messages' do
       email.stubs(:attachments).returns([ attachment ])
-      response, state, new_contributors = subject.parse(email, contributors)
+      responses, state, new_contributors = subject.parse(email, contributors)
 
-      response[:attachments].length.must_equal 1
+      responses.first[:attachments].length.must_equal 1
     end
   end
 end

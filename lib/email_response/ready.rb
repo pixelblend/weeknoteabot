@@ -13,10 +13,12 @@ class EmailResponse
 
     private
     def compile_weeknotes(email, contributors)
+      responses = []
+
       weeknotes = WeeknoteSubmissions.instance.compile!
       zipped_attachments = WeeknoteZipper.new(weeknotes[:attachments]).zip!
 
-      response = {
+      responses << {
         :to => contributors.compiler,
         :subject => 'Weeknotes compilation',
         :body => Template.render('compilation', :messages => weeknotes[:messages]),
@@ -27,7 +29,7 @@ class EmailResponse
       WeeknoteSubmissions.instance.clear!
 
       # TODO: also send a group email saying thanks
-      [response, WeeknoteState.new('idle'), contributors]
+      [responses, WeeknoteState.new('idle'), contributors]
     end
 
     def log_weeknotes(email, contributors)
@@ -41,7 +43,7 @@ class EmailResponse
         :attachments => weeknote[:attachments]
       }
 
-      [response, WeeknoteState.new('ready'), contributors]
+      [[response], WeeknoteState.new('ready'), contributors]
     end
   end
 end

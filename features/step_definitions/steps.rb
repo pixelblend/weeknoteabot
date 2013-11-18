@@ -37,7 +37,7 @@ When(/^the email has an attachment$/) do
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
-  @response, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  @responses, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
 
   if started =~ /not/
     @state.state.must_equal 'idle'
@@ -53,20 +53,20 @@ end
 Then(/^(everyone|the contributor|the stranger) will receive an email.*$/) do |whom|
   case whom
   when 'everyone'
-    @response[:to].must_equal :all
+    @responses.first[:to].must_equal :all
   when 'the contributor'
-    @response[:to].must_equal 'known@bbc.co.uk'
+    @responses.first[:to].must_equal 'known@bbc.co.uk'
   when 'the stranger'
-    @response[:to].must_equal 'unknown@itv.com'
+    @responses.first[:to].must_equal 'unknown@itv.com'
   end
 end
 
 Then(/^the subject will be "(.*)"$/) do |subject|
-  @response[:subject].must_equal subject
+  @responses.first[:subject].must_equal subject
 end
 
 Then(/^the contents of the email are saved for later$/) do
-  @response, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  @responses, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
   WeeknoteSubmissions.instance.count.must_equal 1
 end
 
@@ -75,8 +75,8 @@ Then(/^it is noted that the contributor has submitted weeknotes$/) do
 end
 
 Then(/^everyone will receive the email$/) do
-  @response[:to].must_equal :all
-  @response[:subject].must_equal "Weeknotes submission from known@bbc.co.uk"
-  @response[:body].must_equal @email.body
+  @responses.first[:to].must_equal :all
+  @responses.first[:subject].must_equal "Weeknotes submission from known@bbc.co.uk"
+  @responses.first[:body].must_equal @email.body
 end
 

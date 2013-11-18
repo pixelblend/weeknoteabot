@@ -20,7 +20,7 @@ class EmailResponse
         state = WeeknoteState.new('idle')
       end
 
-      [response, state, contributors]
+      [[response], state, contributors]
     end
   end
 end

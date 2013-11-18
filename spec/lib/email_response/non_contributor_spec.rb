@@ -7,7 +7,10 @@ describe EmailResponse::NonContributor do
     email = stub(:email)
     email.expects(:from).returns(['someone@internet.com'])
 
-    response = subject.parse(email)
+    responses = subject.parse(email)
+    responses.length.must_equal 1
+
+    response = responses.first
     response[:to].must_equal 'someone@internet.com'
     response[:subject].must_equal "Sorry, you can't contribute"
     response[:body].must_include 'not on our contributor list'

@@ -15,10 +15,12 @@ describe EmailResponse::Idle do
   it 'sends out new weeknotes notification and sets sender as the compiler' do
     email.expects(:subject).returns('Begin Weeknotes').twice
 
-    response, state, new_contributors = subject.parse(email, contributors)
+    responses, state, new_contributors = subject.parse(email, contributors)
 
     state.state.must_equal 'ready'
-    response.must_equal({ :to => :all, :subject => 'New Weeknotes',
+
+    responses.length.must_equal 1
+    responses.first.must_equal({ :to => :all, :subject => 'Begin Weeknotes',
                           :body => 'Weeknotes please!' })
     new_contributors.compiler.must_equal 'dan@bbc.co.uk'
   end
@@ -26,7 +28,10 @@ describe EmailResponse::Idle do
   it 'replies to non-triggering email' do
     email.expects(:subject).returns('My work this week').once
 
-    response, state, new_contributors = subject.parse(email, contributors)
+    responses, state, new_contributors = subject.parse(email, contributors)
+
+    responses.length.must_equal 1
+    response = responses.first
 
     response[:subject].must_equal 'Sorry, why did you send this?'
     response[:to].must_equal 'dan@bbc.co.uk'
