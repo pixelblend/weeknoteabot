@@ -24,7 +24,7 @@ class Contributors < Value.new(:members, :compiler, :submitters)
 
   def compiler!(email)
     if member?(email)
-      Contributors.new(@members, email)
+      Contributors.new(@members, email, @submitters)
     else
       self
     end

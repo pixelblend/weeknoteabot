@@ -38,6 +38,14 @@ describe Contributors do
       contributors.compiler?('dan@bbc.co.uk').must_equal false
     end
 
+    it 'keeps submitter and members state when updating' do
+      contributors = subject.submitted!('dan@bbc.co.uk')
+                     .compiler!('tracy@bbc.co.uk')
+
+      contributors.submitters.must_equal ['dan@bbc.co.uk']
+      contributors.members.must_equal ['dan@bbc.co.uk', 'tracy@bbc.co.uk']
+    end
+
     it 'prevents non-contributors from owning' do
       contributors = subject.compiler! 'someone@NOTbbc.co.uk'
       contributors.compiler?('someone@NOTbbc.co.uk').must_equal false
