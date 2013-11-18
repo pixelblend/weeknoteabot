@@ -56,17 +56,22 @@ describe EmailResponse::Ready do
 
     responses, state, new_contributors = subject.parse(email, contributors)
 
-    responses.length.must_equal 1
-    response = responses.first
+    responses.length.must_equal 2
 
-    attachments = response[:attachments]
+    compiled = responses.first
+
+    attachments = compiled[:attachments]
 
     attachments.length.must_equal 1
     attachments[0][:name].must_equal 'weeknotes.zip'
     attachments[0][:file].must_equal weeknote_zip
 
-    response[:body].must_match 'dan@bbc.co.uk'
-    response[:body].must_match 'file1.txt'
+    compiled[:body].must_match 'dan@bbc.co.uk'
+    compiled[:body].must_match 'file1.txt'
+
+    notification = responses.last
+    notification[:to].must_equal :all
+    notification[:subject].must_equal 'End weeknotes'
   end
 
   describe 'emails with attachments' do
