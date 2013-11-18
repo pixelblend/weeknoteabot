@@ -25,6 +25,12 @@ class EmailResponse
         :attachments => [{:name => 'weeknotes.zip', :file => zipped_attachments}]
       }
 
+      responses << {
+        :to => :all,
+        :subject => email.subject,
+        :body => email.body
+      }
+
       # clear Tempfiles from this batch of submissions
       WeeknoteSubmissions.instance.clear!
 

@@ -1,5 +1,4 @@
 # TODO
-* Email contributors that weeknotes is over when compilation is sent out to compiler
 * **WeeknotesPeriod** enumerable to figure out when to send nag emails
 * Class to defer nag emails - Run thread, sleep for period X, trigger email
 
