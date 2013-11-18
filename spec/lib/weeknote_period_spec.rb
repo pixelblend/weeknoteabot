@@ -11,37 +11,48 @@ describe WeeknotePeriod do
   let(:monday_morning)      { Time.mktime(2013,11,25, 9, 0) }
 
   it "is thursday afternoon given thursday morning" do
-    Time.stubs(:now).returns(thursday_morning)
-    next_period = WeeknotePeriod.next
+    subject = WeeknotePeriod.new(thursday_morning)
+    next_period = subject.next
 
-    (Time.now+next_period).must_equal thursday_afternoon
+    (thursday_morning+next_period).must_equal thursday_afternoon
   end
 
   it "is friday morning given thursday afternoon" do
-    Time.stubs(:now).returns(thursday_afternoon)
-    next_period = WeeknotePeriod.next
+    subject = WeeknotePeriod.new(thursday_afternoon)
+    next_period = subject.next
 
-    (Time.now+next_period).must_equal friday_morning
+    (thursday_afternoon+next_period).must_equal friday_morning
   end
 
   it "is monday morning given friday afternoon" do
-    Time.stubs(:now).returns(friday_afternoon)
-    next_period = WeeknotePeriod.next
+    subject = WeeknotePeriod.new(friday_afternoon)
+    next_period = subject.next
 
-    (Time.now+next_period).must_equal monday_morning
+    (friday_afternoon+next_period).must_equal monday_morning
   end
 
   it "is monday morning given saturday night" do
-    Time.stubs(:now).returns(saturday_night)
-    next_period = WeeknotePeriod.next
+    subject = WeeknotePeriod.new(saturday_night)
+    next_period = subject.next
 
-    (Time.now+next_period).must_equal monday_morning
+    (saturday_night+next_period).must_equal monday_morning
   end
 
   it "is monday morning given sunday morning" do
-    Time.stubs(:now).returns(sunday_morning)
-    next_period = WeeknotePeriod.next
+    subject = WeeknotePeriod.new(sunday_morning)
+    next_period = subject.next
 
-    (Time.now+next_period).must_equal monday_morning
+    (sunday_morning+next_period).must_equal monday_morning
+  end
+
+  it "is thursday afternoon, then friday morning" do
+    subject = WeeknotePeriod.new(thursday_morning)
+    next_period = subject.next
+
+    (thursday_morning+next_period).must_equal thursday_afternoon
+
+    next_period = subject.next
+
+    (thursday_afternoon+next_period).must_equal friday_morning
   end
 end
