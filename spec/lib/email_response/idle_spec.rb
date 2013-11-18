@@ -13,7 +13,7 @@ describe EmailResponse::Idle do
   end
 
   it 'sends out new weeknotes notification and sets sender as the compiler' do
-    email.expects(:subject).returns('New Weeknotes').twice
+    email.expects(:subject).returns('Begin Weeknotes').twice
 
     response, state, new_contributors = subject.parse(email, contributors)
 

@@ -6,7 +6,7 @@ class EmailResponse
     def parse(email, contributors)
       sender = email.from.first
 
-      if email.subject.match(/new weeknotes/i)
+      if email.subject.match(/begin weeknotes/i)
         response = { :to => :all,
                      :subject => email.subject,
                      :body => email.body }

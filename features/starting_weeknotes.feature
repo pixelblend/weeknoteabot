@@ -5,7 +5,7 @@ Feature: Starting Weeknotes
   Scenario: Starter email received
     Given weeknotes haven't been started
     When a contributor sends an email
-    And the subject is "New Weeknotes"
+    And the subject is "Begin Weeknotes"
     Then weeknotes will be started
     And that contributor becomes the compiler
     And everyone will receive an email
