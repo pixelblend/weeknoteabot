@@ -34,11 +34,15 @@ class WeeknoteSubmissions
     initialize
   end
 
-  def compile
-    {
+  def compile!
+    compiled = {
       :messages => @storage,
       :attachments => attachments
     }
+
+    clear!
+
+    compiled
   end
 
   def attachments

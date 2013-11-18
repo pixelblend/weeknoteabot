@@ -11,7 +11,6 @@ class EmailResponse
                      :subject => email.subject,
                      :body => email.body }
         state = WeeknoteState.new('ready')
-        # TODO: clear weeknote submissions here?
         contributors = contributors.compiler! sender
       else
         body = Template.render('not_ready')
