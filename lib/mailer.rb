@@ -14,7 +14,8 @@ module Mailer
   # find unread emails, oldest first
   def self.check_for_new_email(&blk)
     Mail.find(FIND_ATTRIBUTES) do |email, imap, uid|
-      blk.call(email)
+      weeknote = Weeknote.parse(email)
+      blk.call(weeknote)
 
       # mark as read
       imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
@@ -25,6 +26,7 @@ module Mailer
     email[:attachments] ||= []
 
     begin
+      $logger.info("Sending email")
       deliver(email)
     rescue ArgumentError => e
       raise DeliveryError, e

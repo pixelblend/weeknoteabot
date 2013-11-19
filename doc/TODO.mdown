@@ -1,3 +1,13 @@
+#TODO
+* Weeknote that parses Mail object and returns clean output
+  - Body in plain text
+  - Subject
+  - name of sender
+  - email address
+  - array of attachments
+* Reply to emails by keeping their subject line
+  - e.g. RE: **your subject**
+
 ##Post-MVP:
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
