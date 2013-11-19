@@ -1,3 +1,4 @@
-class Weeknote < Struct.new(:name, :email, :subject, :body, :attachments)
+require 'values'
+class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
 
 end
