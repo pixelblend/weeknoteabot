@@ -5,6 +5,7 @@ require 'weeknote_state'
 require 'contributors'
 require 'responder'
 require 'fetch_from_whereabouts'
+require 'nag_on_state_change'
 
 module MailRoom
   def self.start!
@@ -20,7 +21,7 @@ module MailRoom
     threads.each(&:join)
   end
 
-  def self.check_mail(queue, sleep: 10)
+  def self.check_mail(queue, sleep=10)
     Thread.new do
       loop do
         $logger.info "Checking for new email"
@@ -40,23 +41,24 @@ module MailRoom
     Thread.new do
       state = WeeknoteState.new('idle')
       contributors = Contributors.new(FetchFromWhereabouts.fetch)
+      nag_on_state_change = NagOnStateChange.new(outgoing_queue, state)
 
       loop do
         email = incoming_queue.pop
 
-        $logger.info "Recieved email #{email.subject} for processing"
+        $logger.info "Received email #{email.subject} for processing"
 
         replies, state, contributors = Responder.respond_to(email, state, contributors)
 
-        if replies.length > 0
-          replies.each do |reply|
-            $logger.info "Sent for response #{email.subject}"
+        nag_on_state_change.state = state
 
-            outgoing_queue.push reply
-          end
-        else
+        if replies.empty?
           $logger.info "Not responding to #{email.subject}"
+        else
+          $logger.info "Sent response to #{email.subject}"
         end
+
+        replies.each { |reply| outgoing_queue.push reply }
       end
     end
   end
