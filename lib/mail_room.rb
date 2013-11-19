@@ -72,6 +72,10 @@ module MailRoom
         # TODO: not very elegant
         email[:from] ||= Mail.retriever_method.settings[:user_name]
 
+        if email[:to] == :all
+          email[:to] = ContributorsCache.read.members
+        end
+
         begin
           Mailer.send(email)
         rescue Mailer::DeliveryError => e
