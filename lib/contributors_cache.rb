@@ -18,7 +18,7 @@ class ContributorsCache
 
   private
   def self.store
-    # true param ensures thread-safe store
+    # true arg ensures thread-safe store
     @@store ||= PStore.new(self.location, true)
   end
 
