@@ -1,5 +1,6 @@
 require 'set'
 require 'values'
+require_relative 'contributors_cache'
 
 class Contributors < Value.new(:members, :compiler, :submitters)
   def initialize(members=[], compiler=false, submitters=[])
@@ -8,6 +9,7 @@ class Contributors < Value.new(:members, :compiler, :submitters)
     compiler   = compiler == false ? compiler : compiler.downcase
 
     super(members, compiler, submitters)
+    ContributorsCache.write(self)
   end
 
   def member?(email)

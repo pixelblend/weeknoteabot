@@ -14,3 +14,6 @@ $logger = Logger.new('/dev/null')
 Mail.defaults do
   delivery_method :test
 end
+
+require 'contributors_cache'
+ContributorsCache.stubs(:location).returns('/dev/null')

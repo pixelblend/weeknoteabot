@@ -3,6 +3,11 @@ require_relative '../spec_helper'
 require 'contributors'
 
 describe Contributors do
+  it 'writes to cache on creation' do
+    ContributorsCache.expects(:write).once
+    Contributors.new(['dan@bbc.co.uk'])
+  end
+
   describe 'members' do
     subject { Contributors.new(['dan@bbc.co.uk']) }
 
