@@ -1,6 +1,3 @@
-# TODO
-* Class to defer nag emails - Run thread, sleep for period X, trigger email
-
 ##Post-MVP:
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
