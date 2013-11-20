@@ -27,7 +27,7 @@ describe EmailResponse::Ready do
     new_contributors.submitters.must_equal ['dan@bbc.co.uk']
   end
 
-  it "won't close weeknotes accept when the contributor says so" do
+  it "won't close weeknotes except when the contributor says so" do
     weeknote = Weeknote.new('tracy', 'tracy@bbc.co.uk', 'End Weeknotes', '')
 
     response, state, new_contributors = subject.parse(weeknote, contributors)
