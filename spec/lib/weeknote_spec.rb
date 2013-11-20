@@ -3,7 +3,52 @@ require 'weeknote'
 
 describe Weeknote do
   describe "parsing" do
-    it "parses simple mail objects"
+    it "parses simple mail objects" do
+      mail = Mail.new do
+        from 'Dan Nuttall <dan@bbc.co.uk>'
+        subject 'My Subject'
+        body 'My work this week'
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.name.must_equal 'Dan Nuttall'
+      subject.email.must_equal 'dan@bbc.co.uk'
+      subject.subject.must_equal 'My Subject'
+      subject.body.must_equal 'My work this week'
+      subject.attachments.must_equal []
+    end
+
+    it 'parses emails without a senders name' do
+      mail = Mail.new do
+        from 'dan@bbc.co.uk'
+        subject 'My Subject'
+        body 'My work this week'
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.name.must_equal ''
+    end
+
+    it 'parses emails without a subject' do
+      mail = Mail.new do
+        from 'dan@bbc.co.uk'
+        body 'My work this week'
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.subject.must_equal '<No Subject>'
+    end
+
+    it 'parses empty emails' do
+      mail = Mail.new do
+        from 'dan@bbc.co.uk'
+        subject 'My work this week'
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.body.must_equal ''
+    end
+
     it "parses multipart email"
     it "parses attachments"
   end
