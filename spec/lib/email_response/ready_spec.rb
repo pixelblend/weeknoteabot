@@ -5,7 +5,7 @@ require 'weeknote'
 
 describe EmailResponse::Ready do
   subject { EmailResponse::Ready.new }
-  let(:contributors) { Contributors.new(['dan@bbc.co.uk']) }
+  let(:contributors) { Contributors.new(['dan@bbc.co.uk', 'tracy@bbc.co.uk']) }
   let(:weeknote) do
     Weeknote.new 'Dan', 'dan@bbc.co.uk', 'What I did this week', 'Lots of stuff...', [{:name => 'file1.txt'}]
   end
@@ -27,14 +27,23 @@ describe EmailResponse::Ready do
     new_contributors.submitters.must_equal ['dan@bbc.co.uk']
   end
 
-  it 'returns idle state when closing weeknote is sent' do
+  it "won't close weeknotes accept when the contributor says so" do
+    weeknote = Weeknote.new('tracy', 'tracy@bbc.co.uk', 'End Weeknotes', '')
+
+    response, state, new_contributors = subject.parse(weeknote, contributors)
+
+    state.state.must_equal 'ready'
+  end
+
+  it "returns idle state when closing weeknote is sent" do
     WeeknoteZipper.any_instance.expects(:zip!).once
-    WeeknoteSubmissions.instance.expects(:compile!).returns({}).once
+    WeeknoteSubmissions.instance.expects(:compile!).returns({:attachments => []}).once
     Template.expects(:render).once
 
     weeknote = Weeknote.new('Dan', 'dan@bbc.co.uk', 'End Weeknotes', '')
 
-    response, state, new_contributors = subject.parse(weeknote, contributors)
+    compiler_contributors = contributors.compiler!('dan@bbc.co.uk')
+    response, state, new_contributors = subject.parse(weeknote, compiler_contributors)
 
     state.state.must_equal 'idle'
   end
@@ -44,9 +53,10 @@ describe EmailResponse::Ready do
     WeeknoteZipper.any_instance.stubs(:zip!).returns(weeknote_zip)
     WeeknoteSubmissions.instance.add weeknote
 
+    compiler_contributors = contributors.compiler!('dan@bbc.co.uk')
     ending_weeknote = Weeknote.new('dan', 'dan@bbc.co.uk', 'End weeknotes', '')
 
-    responses, state, new_contributors = subject.parse(ending_weeknote, contributors)
+    responses, state, new_contributors = subject.parse(ending_weeknote, compiler_contributors)
 
     responses.length.must_equal 2
 
@@ -64,7 +74,7 @@ describe EmailResponse::Ready do
 
     notification = responses.last
     notification[:to].must_equal :all
-    notification[:subject].must_equal 'End weeknotes'
+    notification[:subject].must_equal 'Weeknotes are done!'
   end
 
   describe 'weeknotes with attachments' do
