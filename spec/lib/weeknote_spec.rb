@@ -40,17 +40,57 @@ describe Weeknote do
     end
 
     it 'parses empty emails' do
-      mail = Mail.new do
-        from 'dan@bbc.co.uk'
-        subject 'My work this week'
-      end
+      mail = Mail.new
 
       subject = Weeknote.parse(mail)
       subject.body.must_equal ''
     end
 
-    it "parses multipart email"
-    it "parses attachments"
+    it "uses plain text body if available" do
+      mail = Mail.new do
+        text_part do
+          body 'This is plain text'
+        end
+
+        html_part do
+          body '<h1>This is HTML</h1>'
+        end
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.body.must_equal 'This is plain text'
+    end
+
+    it "uses decoded HTML email if plain text is not available" do
+      mail = Mail.new do
+        subject 'HTML only'
+
+        content_type 'text/html; charset=UTF-8'
+        html_part do
+          body '<h1>This is HTML</h1>'
+        end
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.body.must_equal 'This is HTML'
+    end
+
+    it "parses attachments" do
+      mail = Mail.new do
+        subject "attachments"
+        body "hello there"
+        add_file File.join(File.dirname(__FILE__)+'/../../README.mdown')
+      end
+
+      subject = Weeknote.parse(mail)
+      subject.body.must_equal "hello there"
+
+      subject.attachments.length.must_equal 1
+
+      attached = subject.attachments.first
+      attached[:name].must_equal 'README.mdown'
+      attached[:file].must_be_instance_of File
+    end
   end
 
   describe "attributes" do
