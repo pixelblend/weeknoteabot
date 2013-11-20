@@ -1,4 +1,5 @@
 require 'mail'
+require 'weeknote'
 
 module Mailer
   class DeliveryError < Exception; end
