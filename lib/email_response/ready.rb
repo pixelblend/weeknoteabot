@@ -7,13 +7,27 @@ class EmailResponse
   class Ready
     def parse(weeknote, contributors)
       if weeknote.subject.match(/end weeknotes/i)
-        compile_weeknotes(weeknote, contributors)
+        if contributors.compiler?(weeknote.email)
+          compile_weeknotes(weeknote, contributors)
+        else
+          youre_not_the_compiler(weeknote, contributors)
+        end
       else
         log_weeknotes(weeknote, contributors)
       end
     end
 
     private
+    def youre_not_the_compiler(weeknote, contributors)
+      response = {
+        :to => contributors.compiler,
+        :subject => "You can't finish weeknotes...",
+        :body => Template.render('cant_finish_weeknotes', :compiler => contributors.compiler),
+      }
+
+      [[response], WeeknoteState.new('ready'), contributors]
+    end
+
     def compile_weeknotes(weeknote, contributors)
       responses = []
 
@@ -29,11 +43,11 @@ class EmailResponse
 
       responses << {
         :to => :all,
-        :subject => weeknote.subject,
+        :subject => 'Weeknotes are done!',
         :body => weeknote.body
       }
 
-      # clear Tempfiles from this batch of submissions
+      # clear this batch of submissions
       WeeknoteSubmissions.instance.clear!
 
       # TODO: also send a group email saying thanks
