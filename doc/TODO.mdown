@@ -4,6 +4,9 @@
 
 ##Post-MVP:
 * Email response classes have too much to do
+  * Parse on subject, rather than state
+  * e.g. 'trigger' subjects (start / stop weeknotes, status)
+  * Still guard early against non-contributors
 * Remove annoying signatures
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
