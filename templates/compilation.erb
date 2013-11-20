@@ -1,18 +1,26 @@
 Here are the <%= messages.length %> compiled weeknotes for this week:
 
+-------------------------------------------------------------------------------
+
 <% messages.each do |msg| %>
 <%= msg.sender %> said:
 
+===============================================================================
+
 <%= msg.body %>
+
+===============================================================================
 
 <% unless msg.attachments.empty? %>
 They also attached the following files:
 <%= msg.attachments.collect{|a| a[:name]}.join(', ') %>
 <% end %>
-----
+
+-------------------------------------------------------------------------------
+
 <% end %>
 
-All attachments are attached as a zip file.
+All attachments and the contents of this email are attached as a zip file.
 
 Thanks for doing weeknotes!
 
