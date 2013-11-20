@@ -1,18 +1,20 @@
+require 'weeknote_state'
 require 'weeknote_submissions'
 require 'weeknote_zipper'
+require 'template'
 
 class EmailResponse
   class Ready
-    def parse(email, contributors)
-      if email.subject.match(/end weeknotes/i)
-        compile_weeknotes(email, contributors)
+    def parse(weeknote, contributors)
+      if weeknote.subject.match(/end weeknotes/i)
+        compile_weeknotes(weeknote, contributors)
       else
-        log_weeknotes(email, contributors)
+        log_weeknotes(weeknote, contributors)
       end
     end
 
     private
-    def compile_weeknotes(email, contributors)
+    def compile_weeknotes(weeknote, contributors)
       responses = []
 
       weeknotes = WeeknoteSubmissions.instance.compile!
@@ -27,8 +29,8 @@ class EmailResponse
 
       responses << {
         :to => :all,
-        :subject => email.subject,
-        :body => email.body
+        :subject => weeknote.subject,
+        :body => weeknote.body
       }
 
       # clear Tempfiles from this batch of submissions
@@ -38,15 +40,15 @@ class EmailResponse
       [responses, WeeknoteState.new('idle'), contributors]
     end
 
-    def log_weeknotes(email, contributors)
-      contributors = contributors.submitted!(email.from.first)
-      weeknote = WeeknoteSubmissions.instance.add email
+    def log_weeknotes(weeknote, contributors)
+      contributors = contributors.submitted!(weeknote.email)
+      WeeknoteSubmissions.instance.add weeknote
 
       response = {
         :to => :all,
-        :subject => "Weeknotes submission from #{weeknote[:from]}",
-        :body => weeknote[:body],
-        :attachments => weeknote[:attachments]
+        :subject => "Weeknotes submission from #{weeknote.sender}",
+        :body => weeknote.body,
+        :attachments => weeknote.attachments
       }
 
       [[response], WeeknoteState.new('ready'), contributors]

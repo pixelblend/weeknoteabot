@@ -1,13 +1,13 @@
 Here are the compiled weeknotes for this week:
 
 <% messages.each do |msg| %>
-<%= msg[:from] %> said:
+<%= msg.sender %> said:
 
-<%= msg[:body] %>
+<%= msg.body %>
 
-<% if msg.has_key?(:attachments) %>
+<% unless msg.attachments.empty? %>
 They also attached the following files:
-<%= msg[:attachments].collect{|a| a[:name]}.join(', ') %>
+<%= msg.attachments.collect{|a| a[:name]}.join(', ') %>
 <% end %>
 ----
 <% end %>
