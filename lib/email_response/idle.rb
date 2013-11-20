@@ -3,19 +3,17 @@ require 'template'
 
 class EmailResponse
   class Idle
-    def parse(email, contributors)
-      sender = email.from.first
-
-      if email.subject.match(/begin weeknotes/i)
+    def parse(weeknote, contributors)
+      if weeknote.subject.match(/begin weeknotes/i)
         response = { :to => :all,
-                     :subject => email.subject,
-                     :body => email.body }
+                     :subject => weeknote.subject,
+                     :body => weeknote.body }
         state = WeeknoteState.new('ready')
-        contributors = contributors.compiler! sender
+        contributors = contributors.compiler! weeknote.email
       else
         body = Template.render('not_ready')
-        response = { :to => sender,
-                     :subject => 'Sorry, why did you send this?',
+        response = { :to => weeknote.email,
+                     :subject => "RE: #{weeknote.subject}",
                      :body => body }
         state = WeeknoteState.new('idle')
       end

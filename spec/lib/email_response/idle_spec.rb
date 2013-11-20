@@ -1,19 +1,14 @@
 require_relative '../../spec_helper'
 require 'email_response/idle'
 require 'contributors'
+require 'weeknote'
 
 describe EmailResponse::Idle do
   subject { EmailResponse::Idle.new }
   let(:contributors) { Contributors.new(['dan@bbc.co.uk']) }
-  let(:email) do
-    stub(:email).tap do |e|
-      e.stubs(:from).returns(['dan@bbc.co.uk'])
-      e.stubs(:body).returns('Weeknotes please!')
-    end
-  end
 
   it 'sends out new weeknotes notification and sets sender as the compiler' do
-    email.expects(:subject).returns('Begin Weeknotes').twice
+    email = Weeknote.new('dan', 'dan@bbc.co.uk', 'Begin Weeknotes', 'Weeknotes please!')
 
     responses, state, new_contributors = subject.parse(email, contributors)
 
@@ -26,14 +21,14 @@ describe EmailResponse::Idle do
   end
 
   it 'replies to non-triggering email' do
-    email.expects(:subject).returns('My work this week').once
+    email = Weeknote.new('dan', 'dan@bbc.co.uk', 'My work this week', 'hello')
 
     responses, state, new_contributors = subject.parse(email, contributors)
 
     responses.length.must_equal 1
     response = responses.first
 
-    response[:subject].must_equal 'Sorry, why did you send this?'
+    response[:subject].must_equal 'RE: My work this week'
     response[:to].must_equal 'dan@bbc.co.uk'
     response[:body].must_match 'I don\'t understand'
     new_contributors.compiler.must_equal false
