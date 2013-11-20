@@ -39,9 +39,7 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
 
   private
   def self.parse_body(mail)
-    body = mail.body.decoded
-
-    return body unless body.blank?
+    return mail.body.decoded if mail.parts.empty?
 
     bodies = {}
 
@@ -68,6 +66,7 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
     attachments.collect do |f|
       tmpfile = Tempfile.new('weeknote_attachment')
       tmpfile.write(f.read)
+      tmpfile.rewind
 
       { :name => f.filename, :file => tmpfile }
     end
