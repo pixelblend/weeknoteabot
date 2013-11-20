@@ -1,7 +1,6 @@
 require_relative '../spec_helper'
 require 'mailer'
 require 'tempfile'
-require 'pathname'
 
 describe Mailer do
   before do
@@ -49,15 +48,18 @@ describe Mailer do
     file_to_be_attached.write('attachment here')
     file_to_be_attached.rewind
 
-    @email[:attachments] = [file_to_be_attached.path]
+    @email[:attachments] = [{:name => "filename.txt", :file => file_to_be_attached}]
 
     Mailer.send(@email)
     Mail::TestMailer.deliveries.length.must_equal 1
 
     sent = Mail::TestMailer.deliveries.first
     sent.attachments.length.must_equal 1
+
+    file_to_be_attached.rewind
+
     attachment = sent.attachments.first
-    attachment.filename.must_equal Pathname.new(file_to_be_attached).basename.to_s
+    attachment.filename.must_equal 'filename.txt'
     attachment.read.must_equal file_to_be_attached.read
   end
 end

@@ -42,8 +42,12 @@ module Mailer
       subject  email[:subject]
       body     email[:body]
 
-      email[:attachments].each do |attachment_path|
-        add_file attachment_path
+      email[:attachments].each do |attachment|
+        begin
+          add_file :filename => attachment[:name], :content => attachment[:file].read
+        rescue => e
+          $logger.warn("Could not attach file: #{e}")
+        end
       end
     end
   end
