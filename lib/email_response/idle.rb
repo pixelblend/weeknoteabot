@@ -11,7 +11,7 @@ class EmailResponse
         state = WeeknoteState.new('ready')
         contributors = contributors.compiler! weeknote.email
       else
-        body = Template.render('not_ready')
+        body = Template.render('not_ready', :message => weeknote.body)
         response = { :to => weeknote.email,
                      :subject => "RE: #{weeknote.subject}",
                      :body => body }
