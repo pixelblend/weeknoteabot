@@ -1,12 +1,12 @@
 require_relative 'email_response'
 
 module Responder
-  def self.respond_to(email, state, contributors)
-    if contributors.member?(email.from.first)
+  def self.respond_to(weeknote, state, contributors)
+    if contributors.member?(weeknote.email)
       email_parser = EmailResponse.new.generate(state.state)
-      reply, state, contributors = email_parser.parse(email, contributors)
+      reply, state, contributors = email_parser.parse(weeknote, contributors)
     else
-      reply = EmailResponse::NonContributor.new.parse(email)
+      reply = EmailResponse::NonContributor.new.parse(weeknote)
     end
 
     [reply, state, contributors]
