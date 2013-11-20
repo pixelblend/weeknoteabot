@@ -29,10 +29,16 @@ describe EmailResponse::Ready do
 
   it "won't close weeknotes except when the contributor says so" do
     weeknote = Weeknote.new('tracy', 'tracy@bbc.co.uk', 'End Weeknotes', '')
+    compiler_contributors = contributors.compiler!('dan@bbc.co.uk')
 
-    response, state, new_contributors = subject.parse(weeknote, contributors)
+    responses, state, new_contributors = subject.parse(weeknote, compiler_contributors)
 
     state.state.must_equal 'ready'
+    response = responses.first
+    response[:to].must_equal 'tracy@bbc.co.uk'
+    response[:subject].must_equal "You can't finish weeknotes..."
+    response[:body].must_match "The compiler has the email address "+
+                                compiler_contributors.compiler
   end
 
   it "returns idle state when closing weeknote is sent" do

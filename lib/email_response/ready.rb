@@ -20,7 +20,7 @@ class EmailResponse
     private
     def youre_not_the_compiler(weeknote, contributors)
       response = {
-        :to => contributors.compiler,
+        :to => weeknote.email,
         :subject => "You can't finish weeknotes...",
         :body => Template.render('cant_finish_weeknotes', :compiler => contributors.compiler),
       }
