@@ -17,11 +17,24 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
   end
 
   def initialize(name, email, subject, body, attachments=[])
-    name ||= ''
-    body ||= ''
+    name    ||= ''
+    body    ||= ''
     subject ||= '<No Subject>'
 
+    email = email.nil? ? '' : email.downcase
+
     super(name, email, subject, body, attachments)
+  end
+
+  def sender
+    case
+    when email.empty?
+      name
+    when name.empty?
+      email
+    else
+      "#{name} <#{email}>"
+    end
   end
 
   private

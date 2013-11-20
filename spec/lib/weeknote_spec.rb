@@ -93,9 +93,25 @@ describe Weeknote do
     end
   end
 
+  describe "sender" do
+    it "uses the email address if that is the only information" do
+      weeknote = Weeknote.with(:name => nil, :email => 'dan@bbc.co.uk', :subject => nil, :body => nil)
+      weeknote.sender.must_equal 'dan@bbc.co.uk'
+    end
+
+    it "uses the name if that is the only information" do
+      weeknote = Weeknote.with(:name => 'Dan', :email => nil, :subject => nil, :body => nil)
+      weeknote.sender.must_equal 'Dan'
+    end
+
+    it "uses the email and name combined" do
+      weeknote = Weeknote.with(:name => 'Dan', :email => 'dan@bbc.co.uk', :subject => nil, :body => nil)
+      weeknote.sender.must_equal 'Dan <dan@bbc.co.uk>'
+    end
+  end
   describe "attributes" do
     let(:attachments) { [stub] }
-    subject { Weeknote.new 'Dan Nuttall', 'dan@bbc.co.uk', 'My work',
+    subject { Weeknote.new 'Dan Nuttall', 'DAN@bbc.co.uk', 'My work',
               'I worked hard', attachments }
 
     it "has the name of the sender" do
