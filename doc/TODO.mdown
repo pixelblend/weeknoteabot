@@ -1,15 +1,10 @@
 #TODO
-* Weeknote that parses Mail object and returns clean output
-  - Body in plain text
-  - Subject
-  - name of sender
-  - email address
-  - array of attachments
-* Reply to emails by keeping their subject line
-  - e.g. RE: **your subject**
+* Add 'status' email
+* Email compiler confirming they are in charge of weeknotes
+* Reply to 'weeknotes start' emails when state is ready
 
 ##Post-MVP:
+* Email response classes have too much to do
+* Remove annoying signatures
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
-* Reply to 'weeknotes start' emails when state is ready
-* Email compiler confirming they are in charge of weeknotes
