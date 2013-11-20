@@ -59,6 +59,8 @@ module MailRoom
           $logger.info "Sent response to #{email.subject}"
         end
 
+        $logger.info "State is #{state.state}"
+
         replies.each { |reply| outgoing_queue.push reply }
       end
     end

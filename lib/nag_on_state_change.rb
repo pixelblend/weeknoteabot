@@ -1,5 +1,6 @@
 require_relative 'weeknote_period'
 require_relative 'contributors'
+require_relative 'nag_email'
 
 class NagOnStateChange
   def initialize(queue, state)
@@ -24,7 +25,9 @@ class NagOnStateChange
     @nag_thread = Thread.new do
       $logger.info('Nag thread started')
       loop do
-        sleep(period.next)
+        wait_time = period.next
+        $logger.info("Sending nag mail in #{wait_time} seconds")
+        sleep(wait_time)
         contributors = ContributorsCache.read
         nagmail = NagEmail.new(contributors.non_submitters).write
         @outbox << nagmail unless nagmail.nil?
@@ -33,6 +36,9 @@ class NagOnStateChange
   end
 
   def stop_nag_thread
-    Thread.kill(@nag_thread) if @nag_thread
+    if @nag_thread
+      $logger.info("Nag thread stopped")
+      Thread.kill(@nag_thread)
+    end
   end
 end
