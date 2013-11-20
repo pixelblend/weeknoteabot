@@ -44,6 +44,7 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
       # naive scrubbing of html tags
       bodies['text/html'].gsub(%r{</?[^>]+?>}, '')
     when bodies.values.length > 0
+      # whatever it is, let's use it
       bodies.values.first
     else
       String.new
