@@ -1,13 +1,14 @@
 #TODO
-* Add 'status' email
 * Email compiler confirming they are in charge of weeknotes
+* Send out-of-band emails from contributors a "how-to" email
 
 ##Post-MVP:
 * Email response classes have too much to do
   * Parse on subject, rather than state
   * e.g. 'trigger' subjects (start / stop weeknotes, status)
   * Still guard early against non-contributors
-* Remove annoying signatures
+* Add 'status' email
+* Remove annoying signatures from incoming emails
 * Source contributors list from somewhere decent
 * Add post-compilation period, email goes to list, sender is told off
 * Reply to 'weeknotes start' emails when state is ready
