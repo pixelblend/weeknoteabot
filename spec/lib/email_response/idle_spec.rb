@@ -18,11 +18,9 @@ describe EmailResponse::Idle do
 
     responses.length.must_equal 2
     responses[0].must_equal({ :to => :all, :subject => 'Begin Weeknotes',
-                          :body => 'Weeknotes please!' })
-
-    responses[1].first.must_equal({ :to => 'dan@bbc.co.uk',
-                                     :subject => 'You are the weeknotes compiler.',
-                                     :body => 'Weeknotes please!' })
+                              :body => 'Weeknotes please!' })
+    responses[1][:to].must_equal 'dan@bbc.co.uk'
+    responses[1][:subject].must_equal "You're compiling weeknotes!"
   end
 
   it 'replies to non-triggering email' do
@@ -35,7 +33,7 @@ describe EmailResponse::Idle do
 
     response[:subject].must_equal 'RE: My work this week'
     response[:to].must_equal 'dan@bbc.co.uk'
-    response[:body].must_match 'I don\'t understand'
+    response[:body].must_match "Here's how weeknotes works:"
     new_contributors.compiler.must_equal false
   end
 end

@@ -10,10 +10,15 @@ class EmailResponse
         responses << { :to => :all,
                        :subject => weeknote.subject,
                        :body => weeknote.body }
+
+        responses << { :to => weeknote.email,
+                       :subject => %Q{You're compiling weeknotes!},
+                       :body => Template.render('compiler') }
+
         state = WeeknoteState.new('ready')
         contributors = contributors.compiler! weeknote.email
       else
-        body = Template.render('not_ready', :message => weeknote.body)
+        body = Template.render('how_to', :message => weeknote.body)
         responses << { :to => weeknote.email,
                        :subject => "RE: #{weeknote.subject}",
                        :body => body }
