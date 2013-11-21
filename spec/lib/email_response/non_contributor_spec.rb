@@ -5,7 +5,7 @@ describe EmailResponse::NonContributor do
   subject { EmailResponse::NonContributor.new }
   it 'replies explaining why the email cannot be processed' do
     email = stub(:email)
-    email.expects(:from).returns(['someone@internet.com'])
+    email.expects(:email).returns('someone@internet.com')
 
     responses = subject.parse(email)
     responses.length.must_equal 1
