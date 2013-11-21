@@ -18,16 +18,6 @@ class EmailResponse
     end
 
     private
-    def youre_not_the_compiler(weeknote, contributors)
-      response = {
-        :to => weeknote.email,
-        :subject => "You can't finish weeknotes...",
-        :body => Template.render('cant_finish_weeknotes', :compiler => contributors.compiler),
-      }
-
-      [[response], WeeknoteState.new('ready'), contributors]
-    end
-
     def compile_weeknotes(weeknote, contributors)
       responses = []
 
@@ -63,6 +53,16 @@ class EmailResponse
         :subject => "Weeknotes submission from #{weeknote.sender}",
         :body => weeknote.body,
         :attachments => weeknote.attachments
+      }
+
+      [[response], WeeknoteState.new('ready'), contributors]
+    end
+
+    def youre_not_the_compiler(weeknote, contributors)
+      response = {
+        :to => weeknote.email,
+        :subject => "You can't finish weeknotes...",
+        :body => Template.render('cant_finish_weeknotes', :compiler => contributors.compiler),
       }
 
       [[response], WeeknoteState.new('ready'), contributors]

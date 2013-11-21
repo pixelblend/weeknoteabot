@@ -7,17 +7,22 @@ describe EmailResponse::Idle do
   subject { EmailResponse::Idle.new }
   let(:contributors) { Contributors.new(['dan@bbc.co.uk']) }
 
-  it 'sends out new weeknotes notification and sets sender as the compiler' do
+  it 'sends out new weeknotes notification confirms sender as the compiler' do
     email = Weeknote.new('dan', 'dan@bbc.co.uk', 'Begin Weeknotes', 'Weeknotes please!')
 
     responses, state, new_contributors = subject.parse(email, contributors)
 
+    new_contributors.compiler.must_equal 'dan@bbc.co.uk'
+
     state.state.must_equal 'ready'
 
-    responses.length.must_equal 1
-    responses.first.must_equal({ :to => :all, :subject => 'Begin Weeknotes',
+    responses.length.must_equal 2
+    responses[0].must_equal({ :to => :all, :subject => 'Begin Weeknotes',
                           :body => 'Weeknotes please!' })
-    new_contributors.compiler.must_equal 'dan@bbc.co.uk'
+
+    responses[1].first.must_equal({ :to => 'dan@bbc.co.uk',
+                                     :subject => 'You are the weeknotes compiler.',
+                                     :body => 'Weeknotes please!' })
   end
 
   it 'replies to non-triggering email' do
