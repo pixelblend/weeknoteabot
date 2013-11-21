@@ -21,7 +21,7 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
     body    ||= ''
     subject ||= '<No Subject>'
 
-    email = email.nil? ? '' : email.downcase
+    email = email.respond_to?(:downcase) ? email.downcase : ''
 
     super(name, email, subject, body, attachments)
   end

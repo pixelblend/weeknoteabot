@@ -1,5 +1,5 @@
 $:.unshift(File.dirname(__FILE__) + '/../../lib')
-require 'mail'
+require 'weeknote'
 
 require 'weeknote_state'
 require 'contributors'
@@ -20,17 +20,11 @@ end
 
 Given(/^weeknotes emails have been submitted$/) do
   weeknotes = []
-  weeknotes << Mail.new do
-    from 'compiler@bbc.co.uk'
-    subject 'weeknotes'
-    body 'Very busy this week'
-  end
+  weeknotes << Weeknote.new('Compiler', 'compiler@bbc.co.uk',
+    'weeknotes', 'Very busy this week')
 
-  weeknotes << Mail.new do
-    from 'known@bbc.co.uk'
-    subject 'my weeknotes'
-    body 'I did some stuff'
-  end
+  weeknotes << Weeknote.new('Known Person', 'known@bbc.co.uk',
+    'my weeknotes', 'I did some stuff')
 
   weeknotes.each do |weeknote|
     _, @state, @contributors = Responder.respond_to(weeknote, @state, @contributors)
@@ -41,29 +35,29 @@ Given(/^weeknotes emails have been submitted$/) do
 end
 
 When(/^a (compiler|contributor|stranger) sends an email$/) do |sender_type|
-  @email = Mail.new
-
   case sender_type
   when 'contributor'
-    @email.from = 'known@bbc.co.uk'
+    @email = 'known@bbc.co.uk'
   when 'compiler'
     @contributors = @contributors.compiler! 'compiler@bbc.co.uk'
-    @email.from = 'compiler@bbc.co.uk'
+    @email = 'compiler@bbc.co.uk'
   when 'stranger'
-    @email.from = 'unknown@itv.com'
+    @email = 'unknown@itv.com'
   end
 end
 
 When(/^the subject is "(.*)"$/) do |subject|
-  @email.subject = subject
+  @weeknote = Weeknote.new(nil, @email, subject, nil)
 end
 
 When(/^the email has an attachment$/) do
-  @email.attachments << Tempfile.new('weeknote_attachment')
+  values = @weeknote.values
+  values.last << Tempfile.new('weeknote_attachment')
+  @weeknote = Weeknote.new(*values)
 end
 
 Then(/^weeknotes will( not)? be started$/) do |started|
-  @responses, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  @responses, @state, @contributors = Responder.respond_to(@weeknote, @state, @contributors)
 
   if started =~ /not/
     @state.state.must_equal 'idle'
@@ -92,7 +86,7 @@ Then(/^the subject will be "(.*)"$/) do |subject|
 end
 
 Then(/^the contents of the email are saved for later$/) do
-  @responses, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  @responses, @state, @contributors = Responder.respond_to(@weeknote, @state, @contributors)
   WeeknoteSubmissions.instance.count.must_equal 1
 end
 
@@ -103,11 +97,11 @@ end
 Then(/^everyone will receive the email$/) do
   @responses.first[:to].must_equal :all
   @responses.first[:subject].must_equal "Weeknotes submission from known@bbc.co.uk"
-  @responses.first[:body].must_equal @email.body
+  @responses.first[:body].must_equal @weeknote.body
 end
 
 Then(/^the compiled weeknotes will be sent to the compiler$/) do
-  @responses, @state, @contributors = Responder.respond_to(@email, @state, @contributors)
+  @responses, @state, @contributors = Responder.respond_to(@weeknote, @state, @contributors)
   @responses.first[:to].must_equal 'compiler@bbc.co.uk'
   @responses.first[:subject].must_equal 'Weeknotes compilation'
 end
@@ -118,6 +112,6 @@ Then(/^the contributors are told that weeknotes are finished$/) do
   @responses.length.must_equal 2
   response = @responses[1]
   response[:to].must_equal :all
-  response[:subject].must_equal 'End Weeknotes'
-  response[:body].must_equal @email.body
+  response[:subject].must_equal 'Weeknotes are done!'
+  response[:body].must_equal @weeknote.body
 end

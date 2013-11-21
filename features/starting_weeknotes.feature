@@ -15,5 +15,5 @@ Feature: Starting Weeknotes
     When a contributor sends an email
     And the subject is "blah blah blah"
     Then weeknotes will not be started
-    And the contributor will receive an email telling them so
-    And the subject will be "Sorry, why did you send this?"
+    And the contributor will receive an email explaining how to use weeknotes
+    And the subject will be "RE: blah blah blah"

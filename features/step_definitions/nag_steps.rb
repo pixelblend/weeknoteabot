@@ -1,15 +1,9 @@
 Given(/^a contributer has submitted$/) do
-  weeknote = Mail.new do
-    from 'compiler@bbc.co.uk'
-    subject 'weeknotes'
-    body 'Very busy this week'
-  end
-
+  weeknote = Weeknote.new('compiler', 'compiler@bbc.co.uk', 'weeknotes', 'Very busy this week')
   _, @state, @contributors = Responder.respond_to(weeknote, @state, @contributors)
 end
 
 When(/^the first nag period ends$/) do
-  WeeknotePeriod.next
   pending
 end
 

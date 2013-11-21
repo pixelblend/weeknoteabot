@@ -2,10 +2,10 @@ require 'template'
 
 class EmailResponse
   class NonContributor
-    def parse(email)
+    def parse(weeknote)
       body = Template.render('non_contributor')
       response = [{
-        :to => email.from.first,
+        :to => weeknote.email,
         :subject => "Sorry, you can't contribute",
         :body => body
       }]
