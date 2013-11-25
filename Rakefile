@@ -26,8 +26,8 @@ task :config do
   receiving[:password] = Readline.readline("Password: ", true)
   receiving[:enable_ssl] = Readline.readline("Use SSL? (y/n): ", true).downcase == 'y'
 
-  File.open('./config.yml', 'w'){ |f| f.write({:sending => sending, :receiving => receiving}.to_yaml) }
-  puts "Written to config.yml"
+  File.open('./config/mail.yml', 'w'){ |f| f.write({:sending => sending, :receiving => receiving}.to_yaml) }
+  puts "Written to config/mail.yml"
 end
 
 Rake::TestTask.new do |t|

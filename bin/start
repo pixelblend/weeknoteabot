@@ -12,11 +12,11 @@ require 'mail_room'
 $logger = Logger.new(STDOUT)
 
 begin
-  config_file = File.expand_path('../config.yml', File.dirname(__FILE__))
+  config_file = File.expand_path('../config/mail.yml', File.dirname(__FILE__))
   email_config = YAML::load_file(config_file)
   Mailer.configure(email_config)
 rescue Errno::ENOENT => e
-  abort "config.yml not found. Use rake config to generate one."
+  abort "config/mail.yml not found. Use rake config to generate one."
 end
 
 MailRoom.start!
