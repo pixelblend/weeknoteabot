@@ -12,7 +12,7 @@ set :domain, ENV['DEPLOY_DOMAIN']
 set :deploy_to, ENV['DEPLOY_PATH']
 set :repository, 'https://github.com/pixelblend/weeknoteabot.git'
 set :commit, ENV['GIT_COMMIT'] if ENV['GIT_COMMIT']
-set :shared_paths, ['config/mail.yml']
+set :shared_paths, ['config/mail.yml', 'db']
 
 desc "Deploys the current version to the server."
 task :deploy do
