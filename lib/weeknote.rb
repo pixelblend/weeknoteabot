@@ -41,12 +41,7 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
   def self.parse_body(mail)
     return mail.body.decoded if mail.parts.empty?
 
-    bodies = {}
-
-    mail.parts.each do |p|
-      next if p.attachment?
-      bodies[p.content_type] = p.decoded
-    end
+    bodies = parse_parts(mail.parts)
 
     case
     when bodies.has_key?('text/plain')
@@ -60,6 +55,22 @@ class Weeknote < Value.new(:name, :email, :subject, :body, :attachments)
     else
       String.new
     end
+  end
+
+  def self.parse_parts(parts)
+    bodies = {}
+
+    parts.each do |p|
+      if p.attachment?
+        next
+      elsif p.multipart?
+        bodies = bodies.merge(parse_parts(p.parts))
+      else
+        bodies[p.content_type] = p.decoded
+      end
+    end
+
+    bodies
   end
 
   def self.parse_attachments(attachments)
