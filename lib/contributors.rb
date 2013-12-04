@@ -1,11 +1,10 @@
-require 'set'
 require 'values'
 require_relative 'contributors_cache'
 
 class Contributors < Value.new(:members, :compiler, :submitters)
   def initialize(members=[], compiler=false, submitters=[])
-    members    ||= Set.new(members.collect(&:downcase))
-    submitters ||= Set.new(submitters.collect(&:downcase))
+    members    = members.uniq.collect(&:downcase)
+    submitters = submitters.uniq.collect(&:downcase)
     compiler   = compiler == false ? compiler : compiler.downcase
 
     super(members, compiler, submitters)

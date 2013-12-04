@@ -18,7 +18,7 @@ describe Contributors do
   end
 
   describe 'submitters' do
-    subject { Contributors.new(['dan@bbc.co.uk', 'tracy@bbc.co.uk']) }
+    subject { Contributors.new(['dan@bbc.co.uk', 'tracy@BBC.co.uk']) }
 
     it 'returns a contributor list with a compiler' do
       contributors = subject.submitted! 'tracy@bbc.co.uk'
@@ -53,7 +53,7 @@ describe Contributors do
 
     it 'prevents non-contributors from owning' do
       contributors = subject.compiler! 'someone@NOTbbc.co.uk'
-      contributors.compiler?('someone@NOTbbc.co.uk').must_equal false
+      contributors.compiler?('someone@notbbc.co.uk').must_equal false
 
       contributors.compiler?.must_equal false
     end
