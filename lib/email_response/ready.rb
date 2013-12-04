@@ -57,7 +57,7 @@ class EmailResponse
       response = {
         :to => :all,
         :subject => "Weeknotes submission from #{weeknote.sender}",
-        :body => weeknote.body,
+        :body => Template.render('submission', :name => weeknote.name, :body => weeknote.body),
         :attachments => weeknote.attachments
       }
 

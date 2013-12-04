@@ -8,7 +8,7 @@ describe EmailResponse::Idle do
   let(:contributors) { Contributors.new(['dan@bbc.co.uk']) }
 
   it 'sends out new weeknotes notification confirms sender as the compiler' do
-    email = Weeknote.new('dan', 'dan@bbc.co.uk', 'Begin Weeknotes', 'Weeknotes please!')
+    email = Weeknote.new('dan', 'dan@bbc.co.uk', 'Begin Weeknotes', 'Send me your notes')
 
     responses, state, new_contributors = subject.parse(email, contributors)
 
@@ -18,8 +18,8 @@ describe EmailResponse::Idle do
 
     responses.length.must_equal 2
     responses[0][:to].must_equal :all
-    responses[0][:subject].must_equal 'Begin Weeknotes'
-    responses[0][:body].must_include 'Weeknotes please!'
+    responses[0][:subject].must_equal 'Weeknotes please!'
+    responses[0][:body].must_include 'Send me your notes'
     responses[1][:to].must_equal 'dan@bbc.co.uk'
     responses[1][:subject].must_equal "You're compiling weeknotes!"
   end

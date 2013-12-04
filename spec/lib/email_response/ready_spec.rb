@@ -14,10 +14,11 @@ describe EmailResponse::Ready do
     responses, state, new_contributors = subject.parse(weeknote, contributors)
 
     responses.length.must_equal 1
-    responses.first.must_equal({
-      :to => :all, :subject => 'Weeknotes submission from Dan <dan@bbc.co.uk>',
-      :body => 'Lots of stuff...', :attachments => [{:name => 'file1.txt'}]
-    })
+    response = responses.first
+    response[:to].must_equal :all
+    response[:subject].must_equal 'Weeknotes submission from Dan <dan@bbc.co.uk>'
+    response[:body].must_include 'Lots of stuff...'
+    response[:attachments].must_equal [{:name => 'file1.txt'}]
     state.state.must_equal 'ready'
   end
 
@@ -54,7 +55,7 @@ describe EmailResponse::Ready do
     state.state.must_equal 'idle'
   end
 
-  it 'sends compiled weeknotes when closing weeknote is sent' do
+  it "sends compiled weeknotes when closing weeknote is sent" do
     weeknote_zip = stub
     WeeknoteZipper.any_instance.stubs(:zip!).returns(weeknote_zip)
     WeeknoteSubmissions.instance.add weeknote

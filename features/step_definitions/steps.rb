@@ -97,7 +97,7 @@ end
 Then(/^everyone will receive the email$/) do
   @responses.first[:to].must_equal :all
   @responses.first[:subject].must_equal "Weeknotes submission from known@bbc.co.uk"
-  @responses.first[:body].must_equal @weeknote.body
+  @responses.first[:body].must_include @weeknote.body
 end
 
 Then(/^the compiled weeknotes will be sent to the compiler$/) do
