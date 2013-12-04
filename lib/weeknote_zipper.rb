@@ -10,13 +10,13 @@ class WeeknoteZipper
     $logger.info("Zipping #{@files.count} files")
     zip_file = Tempfile.new(['weeknote_zipper', '.zip'])
 
-    Zip::Archive.open(zip_file.path, Zip::CREATE) do |ar|
+    zip = Zip::Archive.open_buffer(Zip::CREATE) do |ar|
       @files.each { |f| add_file_to_archive(f, ar) }
     end
 
-    zip_file.rewind
+    zip_file.write(zip)
 
-    count = zip_file.read.length
+    count = zip.length
 
     zip_file.rewind
     $logger.info("Archive #{zip_file.path}, #{count} bytes")
