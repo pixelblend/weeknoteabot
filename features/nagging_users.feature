@@ -2,7 +2,6 @@ Feature: Nagging users
 
   # Please see doc/GLOSSARY.mdown for a definition of terms.
 
-  @wip
   Scenario: Non contributing users are sent a reminder email
     Given weeknotes have been started
     And a contributer has submitted
