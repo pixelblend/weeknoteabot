@@ -37,6 +37,8 @@ module Mailer
   private
   def self.deliver(email)
     Mail.deliver do
+      charset = 'UTF-8'
+
       from     email[:from]
       to       email[:to]
       subject  email[:subject]
