@@ -9,7 +9,7 @@ class EmailResponse
       if weeknote.subject.match(/begin weeknotes/i)
         responses << { :to => :all,
                        :subject => weeknote.subject,
-                       :body => weeknote.body }
+                       :body => Template.render('started', :name => weeknote.name, :body => weeknote.body) }
 
         responses << { :to => weeknote.email,
                        :subject => %Q{You're compiling weeknotes!},

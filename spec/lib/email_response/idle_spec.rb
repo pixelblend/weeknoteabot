@@ -17,8 +17,9 @@ describe EmailResponse::Idle do
     state.state.must_equal 'ready'
 
     responses.length.must_equal 2
-    responses[0].must_equal({ :to => :all, :subject => 'Begin Weeknotes',
-                              :body => 'Weeknotes please!' })
+    responses[0][:to].must_equal :all
+    responses[0][:subject].must_equal 'Begin Weeknotes'
+    responses[0][:body].must_include 'Weeknotes please!'
     responses[1][:to].must_equal 'dan@bbc.co.uk'
     responses[1][:subject].must_equal "You're compiling weeknotes!"
   end
