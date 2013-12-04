@@ -28,6 +28,7 @@ describe Mailer do
 
     sent = Mail::TestMailer.deliveries.first
     sent.from.must_equal ['dan@localhost']
+    sent[:from].display_names.must_equal ['Weeknoteabot']
     sent.to.must_equal ['all@localhost']
     sent.subject.must_equal 'test email'
     sent.body.to_s.must_equal 'hello there!'
