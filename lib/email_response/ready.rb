@@ -22,12 +22,18 @@ class EmailResponse
       responses = []
 
       weeknotes = WeeknoteSubmissions.instance.compile!
+      body = Template.render('compilation', :messages => weeknotes[:messages])
+
+      transcript_file = Tempfile.new('transcript')
+      transcript_file.write(body)
+
+      weeknotes[:attachments] << {:name => 'transcript.txt', :file => transcript_file}
       zipped_attachments = WeeknoteZipper.new(weeknotes[:attachments]).zip!
 
       responses << {
         :to => contributors.compiler,
         :subject => 'Weeknotes compilation',
-        :body => Template.render('compilation', :messages => weeknotes[:messages]),
+        :body => body,
         :attachments => [{:name => 'weeknotes.zip', :file => zipped_attachments}]
       }
 
