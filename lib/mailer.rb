@@ -39,7 +39,7 @@ module Mailer
     Mail.deliver do
       charset = 'UTF-8'
 
-      from     email[:from]
+      from     "Weeknoteabot <#{email[:from]}>"
       to       email[:to]
       subject  email[:subject]
       body     email[:body]
