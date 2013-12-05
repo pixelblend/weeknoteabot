@@ -14,12 +14,16 @@ module Mailer
 
   # find unread emails, oldest first
   def self.check_for_new_email(&blk)
-    Mail.find(FIND_ATTRIBUTES) do |email, imap, uid|
-      weeknote = Weeknote.parse(email)
-      blk.call(weeknote)
+    begin
+      Mail.find(FIND_ATTRIBUTES) do |email, imap, uid|
+        weeknote = Weeknote.parse(email)
+        blk.call(weeknote)
 
-      # mark as read
-      imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
+        # mark as read
+        imap.uid_store( uid, "+FLAGS", [Net::IMAP::SEEN] )
+      end
+    rescue EOFError => e
+      $logger.error("CheckMailError: #{e}")
     end
   end
 
