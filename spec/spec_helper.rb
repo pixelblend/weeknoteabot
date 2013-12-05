@@ -16,4 +16,6 @@ Mail.defaults do
 end
 
 require 'contributors_cache'
-ContributorsCache.stubs(:location).returns('/dev/null')
+require 'weeknote_state_cache'
+def ContributorsCache.location; '/dev/null'; end
+def WeeknoteStateCache.location; '/dev/null'; end

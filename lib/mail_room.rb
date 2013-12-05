@@ -39,7 +39,7 @@ module MailRoom
 
   def self.parse_mail(incoming_queue, outgoing_queue)
     Thread.new do
-      state = WeeknoteState.new('idle')
+      state = WeeknoteStateCache.read || WeeknoteState.new('idle')
       #contributors = Contributors.new(FetchFromWhereabouts.fetch)
       contributors = Contributors.new(%w{dan.nuttall@bbc.co.uk pixelblend@gmail.com pixel.blend@gmail.com})
       nag_on_state_change = NagOnStateChange.new(outgoing_queue, state)
