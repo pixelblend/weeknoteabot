@@ -11,6 +11,8 @@ require 'mail_room'
 
 $logger = Logger.new(STDOUT)
 
+at_exit { p 'exit' }#$logger.info("Server Halted") }
+
 begin
   config_file = File.expand_path('../config/mail.yml', File.dirname(__FILE__))
   email_config = YAML::load_file(config_file)
@@ -19,4 +21,10 @@ rescue Errno::ENOENT => e
   abort "config/mail.yml not found. Use rake config to generate one."
 end
 
-MailRoom.start!
+begin
+  MailRoom.start!
+rescue Interrupt
+  $logger.info("Thread Interrupted")
+  exit
+end
+

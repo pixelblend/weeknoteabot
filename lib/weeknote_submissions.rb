@@ -1,12 +1,17 @@
+require 'weeknote_submissions_cache'
+
 class WeeknoteSubmissions
   include Singleton
 
   def initialize
-    @storage = []
+    @storage = WeeknoteSubmissionsCache.read || []
   end
 
   def add(email)
     @storage << email
+    WeeknoteSubmissionsCache.write(@storage)
+
+    @storage
   end
 
   def count
@@ -14,6 +19,7 @@ class WeeknoteSubmissions
   end
 
   def clear!
+    WeeknoteSubmissionsCache.write([])
     initialize
   end
 

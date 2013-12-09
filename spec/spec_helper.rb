@@ -17,5 +17,7 @@ end
 
 require 'contributors_cache'
 require 'weeknote_state_cache'
+require 'weeknote_submissions_cache'
 def ContributorsCache.location; '/dev/null'; end
 def WeeknoteStateCache.location; '/dev/null'; end
+def WeeknoteSubmissionsCache.write(data); end

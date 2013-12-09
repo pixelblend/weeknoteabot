@@ -8,5 +8,7 @@ $logger = Logger.new('/dev/null')
 
 require 'contributors_cache'
 require 'weeknote_state_cache'
+require 'weeknote_submissions_cache'
 ContributorsCache.stubs(:write)
 WeeknoteStateCache.stubs(:write)
+WeeknoteSubmissionsCache.stubs(:write)
