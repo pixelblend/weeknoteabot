@@ -1,3 +1,3 @@
 config/mail.yml*
 .DS_Store
-db/contributors.pstore
+db/*.pstore
